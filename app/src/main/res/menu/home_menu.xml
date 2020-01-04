@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_fav"
+        android:icon="@drawable/print_icon"
+        app:showAsAction="ifRoom"
+        android:title="@string/print" />
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_add_item"
+        app:showAsAction="ifRoom"
+        android:title="@string/add_items" />
+
+    <item
+        android:id="@+id/confirm_invoice"
+        android:icon="@drawable/confirm_icon"
+        app:showAsAction="ifRoom"
+        android:title="@string/confirm" />
+</menu>

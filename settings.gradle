@@ -1,0 +1,2 @@
+include ':app', ':hsm-android-print', ':DataCollection'
+rootProject.name='SupervisorReceipt'

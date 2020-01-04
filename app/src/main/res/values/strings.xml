@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">SupervisorReceipt</string>
+    <string name="edit">تعديل</string>
+    <string name="waritex_products">أصناف شركة واريتكس</string>
+    <string name="competitor_products">أصناف المنافسين</string>
+    <string name="take_photo">إلتقط صور</string>
+    <string name="gard">جرد الأصناف الفعلية</string>
+    <string name="confirm">تأكيد</string>
+    <string name="print">طباعة</string>
+    <string name="edit_reason_hint">برجاء توضيح سبب التعديل جيدا لأنه سيتم دراسته</string>
+    <string name="edit_reason_title">سبب التعديل</string>
+    <string name="report_edit">تأكيد التعديل</string>
+    <string name="code">code</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="loading">تحميل...</string>
+    <string name="done">تم</string>
+    <string name="please_select_the_customer">please select the customer</string>
+    <string-array name="tona">
+        <item>جننتونا</item>
+        <item>تي سي بوي</item>
+        <item>صن شاين</item>
+    </string-array>
+
+    <string-array name="error_reasons_titles">
+        <item>الكاشيرات قليلة</item>
+        <item>الكمية غير مناسبة</item>
+        <item>نشاط العميل غير مناسب</item>
+        <item>مشكلة اخرى</item>
+    </string-array>
+
+    <!-- PrintActivity resources -->
+    <string name="sign">Sign</string>
+    <string name="ProgressStatus">Progress and Status</string>
+    <string name="enter_printer_id">Enter a Printer ID</string>
+    <string name="enter_mac_address">Enter a MAC address</string>
+    <string name="enter_opt_text">Enter optional text to print</string>
+    <string name="signature_imageview_desc">Signature image</string>
+
+    <!-- CaptureSignatureActivity resources -->
+    <string name="title_activity_capture_signature">CaptureSignatureActivity</string>
+    <string name="sign_below">Sign below</string>
+    <string name="button_save">Save</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="button_clear">Clear</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="str_bessem_allah">بسم الله الرحمن الرحيم</string>
+    <string name="issue_hint">برجاء توضيح سبب التعديل بشكل تام</string>
+    <string name="issue_content">سبب التعديل</string>
+    <string name="suggested">المقترح:</string>
+    <string name="edited">المعدل:</string>
+    <string name="name_hint">الاسم</string>
+    <string name="version_number">version</string>
+    <string name="logout">logout</string>
+    <string name="hello_world">hi</string>
+    <string name="add_items">add items</string>
+    <string name="select_family">اختر العائلة</string>
+    <string name="select_item">اختر الصنف</string>
+    <string name="quantity">الكمية:</string>
+    <string name="no_confirmed_invoice">لم يتم تفعيل فاتورة لهذا العميل</string>
+    <string name="superVisorApp">صفحة المشرف الرئيسية</string>
+    <string name="SalesManApp">صفحة المندوب الرئيسية</string>
+    <string name="chooseSalesMan">اختيار المندوب</string>
+    <string name="choose_customer">اختيار عميل</string>
+    <string name="change_salesMan">تغيير المندوب</string>
+    <string name="customers_Map">خريطة العملاء</string>
+    <string name="you_must_enter_reason">يجب كتابة سبب التعديل</string>
+    <string name="update_version">قم بتحديث البرنامج</string>
+    <string name="update_version_available">يوجد تحديث لبرنامج الكشكول، من فضلك قم به حتي يمكنك الدخول</string>
+    <string name="update">تحديث</string>
+</resources>

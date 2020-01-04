@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    android:padding="@dimen/_20sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_400sdp"
+        android:background="@drawable/rounded_large_stroke"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/_20sdp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:background="@drawable/edit_icon"
+                        android:tint="@color/colorAccent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cairo_regular"
+                        android:text="@string/issue_hint"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:fontFamily="@font/cairo_regular"
+                        android:text="@string/suggested"
+                        android:layout_weight="2"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/suggested_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:fontFamily="@font/cairo_regular"
+                        android:textSize="@dimen/_15sdp"
+                        android:layout_weight="1"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:layout_margin="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:fontFamily="@font/cairo_regular"
+                        android:text="@string/edited"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editedItem_editText"
+                        android:layout_width="0dp"
+                        android:selectAllOnFocus="true"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:fontFamily="@font/cairo_regular"
+                        android:layout_weight="1"
+                        android:text="0"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/issue_content_text_input_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_white"
+                    android:padding="@dimen/_10sdp">
+
+                    <EditText
+                        android:id="@+id/reason_ET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/issue_content"
+                        android:lines="4"
+                        android:padding="@dimen/_10sdp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn_confirm_issue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/edittext_shadow"
+                    android:text="@string/confirm"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:theme="@style/ActionButton.NextStepMode" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>
