@@ -14,8 +14,9 @@ import com.alyndroid.supervisorreceipt.pojo.ItemData
 import kotlinx.android.synthetic.main.family_item_final.view.*
 
 
-class FamiliesAdapter(val context: Context, val listener: ItemsEditableAdapter.ItemClickListener) :
+class FamiliesAdapter(val context: Context, val areShown: Boolean,  val listener: ItemsEditableAdapter.ItemClickListener) :
     ListAdapter<String, FamiliesAdapter.MatchesViewHolder>(DiffCallback) {
+    private lateinit var type: String
     private lateinit var itemsList: List<ItemData>
     private lateinit var familiesList: MutableList<String>
 
@@ -40,7 +41,7 @@ class FamiliesAdapter(val context: Context, val listener: ItemsEditableAdapter.I
             adapter.notifyDataSetChanged()
             holder.recyclerView.adapter = adapter
         } else {
-            val adapter = ItemsEditableAdapter(context, listener)
+            val adapter = ItemsEditableAdapter(context, areShown, type, listener)
             adapter.submitList(itemsList.filter { d ->
                 d.itemcategory == holder.dateTextView.text
             })
@@ -66,9 +67,12 @@ class FamiliesAdapter(val context: Context, val listener: ItemsEditableAdapter.I
         familiesList = list!!
     }
 
-    fun setMatches(itemsList: List<ItemData>) {
+    fun setItems(itemsList: List<ItemData>) {
         this.itemsList = itemsList
         notifyDataSetChanged()
+    }
+    fun setType(type: String) {
+        this.type = type
     }
 
 

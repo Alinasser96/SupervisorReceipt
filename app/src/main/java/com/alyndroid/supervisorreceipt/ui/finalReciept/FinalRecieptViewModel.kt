@@ -1,21 +1,28 @@
 package com.alyndroid.supervisorreceipt.ui.finalReciept
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alyndroid.supervisorreceipt.data.ApiInterface
+import com.alyndroid.supervisorreceipt.helpers.ErrorMsg
+import com.alyndroid.supervisorreceipt.helpers.handleError
+import com.alyndroid.supervisorreceipt.pojo.FinalRecieptData
 import com.alyndroid.supervisorreceipt.pojo.ItemData
+import com.alyndroid.supervisorreceipt.pojo.LoginResponse
 import com.alyndroid.supervisorreceipt.pojo.SendInvoiceResponce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class FinalRecieptViewModel : ViewModel() {
-    private val _response = MutableLiveData<List<ItemData>>()
-    val response: LiveData<List<ItemData>>
+    private val _response = MutableLiveData<FinalRecieptData>()
+    val response: LiveData<FinalRecieptData>
         get() = _response
 
     private val _sendInvoiceResponse = MutableLiveData<SendInvoiceResponce>()
@@ -34,9 +41,21 @@ class FinalRecieptViewModel : ViewModel() {
     val loading: LiveData<Boolean>
         get() = _loading
 
+    private val _sendGardResponse = MutableLiveData<LoginResponse>()
+    val sendGardResponse: LiveData<LoginResponse>
+        get() = _sendGardResponse
+
     private val _empty = MutableLiveData<Boolean>()
     val empty: LiveData<Boolean>
         get() = _empty
+
+    private val _error = MutableLiveData<Int>()
+    val error: LiveData<Int>
+        get() = _error
+
+    private val _fromSV = MutableLiveData<Boolean>()
+    val fromSV: LiveData<Boolean>
+        get() = _fromSV
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -49,7 +68,9 @@ class FinalRecieptViewModel : ViewModel() {
                 val stringResult = loginDeferred.await()
                 _response.value = stringResult.data
                 _loading.value = false
+                _empty.value = stringResult.data.items.isEmpty()
             } catch (e: Exception) {
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
@@ -62,11 +83,13 @@ class FinalRecieptViewModel : ViewModel() {
                 ApiInterface.SNBApi.retrofitService.getAllItemsAsync(salesManCode, customerCode)
             try {
                 val stringResult = loginDeferred.await()
+                _fromSV.value = (stringResult.data.type=="sv")
+                _families.value = stringResult.data.items.map { it.itemcategory }.distinct()
+                _empty.value = stringResult.data.items.isEmpty()
                 _response.value = stringResult.data
-                _families.value = stringResult.data.map { it.itemcategory }.distinct()
-                _empty.value = stringResult.data.isEmpty()
                 _loading.value = false
             } catch (e: Exception) {
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
@@ -82,14 +105,20 @@ class FinalRecieptViewModel : ViewModel() {
             val loginDeferred = ApiInterface.SNBApi.retrofitService.sendGardAsync(map)
             try {
                 val stringResult = loginDeferred.await()
-                _loading.value = false
+                _sendGardResponse.value = stringResult
             } catch (e: Exception) {
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
     }
 
     fun sendSupervisorInvoice(list: MutableList<ItemData>, supervisorNo : String) {
+        for (i in list){
+            if (i.default_unit == i.large_unit){
+                i.editedQuantity = (i.editedQuantity.toDouble()*i.unit_factor!!).toString()
+            }
+        }
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         val formatted = current.format(formatter)
@@ -111,6 +140,7 @@ class FinalRecieptViewModel : ViewModel() {
                 _sendInvoiceResponse.value = stringResult
                 _loading.value = false
             } catch (e: Exception) {
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
@@ -134,9 +164,11 @@ class FinalRecieptViewModel : ViewModel() {
                 _sendSalesmanInvoiceResponse.value = stringResult
                 _loading.value = false
             } catch (e: Exception) {
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
     }
 
+    
 }

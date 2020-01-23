@@ -53,6 +53,7 @@ class NewItemsActivity : BaseActivity() {
                     val intent2 = Intent(this, FinalReceiptActivity::class.java)
                     intent2.putExtra("adapter", intent.getSerializableExtra("adapter"))
                     intent2.putExtra("newList", list as ArrayList)
+                    intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
                     startActivity(intent2)
                 }
             }

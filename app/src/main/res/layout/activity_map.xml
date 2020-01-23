@@ -37,7 +37,8 @@
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.059" />
+        app:layout_constraintVertical_bias="0.089" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
@@ -48,4 +49,55 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip"
+        style="@style/Widget.MaterialComponents.Chip.Filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/show_all_customers"
+        android:textColor="@color/white"
+        app:chipBackgroundColor="@color/royal_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/names_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:singleSelection="true"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/all_customers_chip"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/all_customers"
+            android:checked="true"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            app:chipBackgroundColor="@color/royal_blue"
+            android:layout_height="wrap_content" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/new_customers_chip"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/new_customers"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            app:chipBackgroundColor="@color/royal_blue"
+            android:layout_height="wrap_content" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/edited_customers_chip"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/edited_cutomers"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            app:chipBackgroundColor="@color/royal_blue"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

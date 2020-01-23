@@ -5,16 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.alyndroid.supervisorreceipt.R
+import com.alyndroid.supervisorreceipt.pojo.ItemData
 import com.alyndroid.supervisorreceipt.ui.finalReciept.FinalReceiptActivity
 import kotlinx.android.synthetic.main.activity_edit_item.*
+import kotlinx.android.synthetic.main.product_item.*
 
 class EditItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_item)
-        suggested_tv.text = intent.getStringExtra("count")
-        editedItem_editText.setText(intent.getStringExtra("count"))
+        val item = intent.getParcelableExtra<ItemData>("item")!!
+        suggested_tv.text = item.editedQuantity
+        editedItem_editText.setText(item.editedQuantity)
+        item_name_textView.text = item.itemname
+        unit_textView.text = "الوحدة: " + item.default_unit
 
         btn_confirm_issue.setOnClickListener {
             if (reason_ET.text.toString().isNotEmpty()) {
@@ -22,7 +27,7 @@ class EditItemActivity : AppCompatActivity() {
                 val intent = Intent(this, FinalReceiptActivity::class.java)
                 intent.putExtra("edited", editedItem_editText.text.toString())
                 intent.putExtra("reason", reason_ET.text.toString())
-                intent.putExtra("id", getIntent().getStringExtra("id"))
+                intent.putExtra("id", item.id.toString())
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             } else {

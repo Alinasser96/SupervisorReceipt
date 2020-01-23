@@ -21,37 +21,57 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/buttons_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
+
+    <TextView
+        android:id="@+id/salesman_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:fontFamily="@font/cairo_regular"
+        android:padding="@dimen/_5sdp"
+        android:textSize="@dimen/_18sdp"
+        app:layout_constraintBottom_toTopOf="@+id/chooseCustomers_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="اسم المندوب:" />
+
+    <Button
+        android:id="@+id/chooseCustomers_Button"
+        style="@style/ActionButton.NextStepMode"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/_5sdp"
+        android:text="@string/choose_customer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.425" />
 
-        <Button
-            android:id="@+id/chooseCustomers_Button"
-            style="@style/ActionButton.NextStepMode"
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edittext_shadow"
-            android:padding="@dimen/_5sdp"
-            android:text="@string/choose_customer" />
+    <Button
+        android:id="@+id/changeSalesMan_Button"
+        style="@style/ActionButton.NextStepMode"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chooseCustomers_Button"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/_5sdp"
+        android:text="@string/change_salesMan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chooseCustomers_Button"
+        app:layout_constraintVertical_bias="0.261" />
 
-        <Button
-            android:id="@+id/changeSalesMan_Button"
-            style="@style/ActionButton.NextStepMode"
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edittext_shadow"
-            android:padding="@dimen/_5sdp"
-            android:text="@string/change_salesMan" />
-
-
-    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/filters_progressBar"

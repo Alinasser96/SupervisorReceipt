@@ -13,11 +13,21 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:gravity="start"
-        app:layout_constraintEnd_toStartOf="@+id/product_count_tv"
+        app:layout_constraintEnd_toStartOf="@+id/unit_name_textView"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <TextView
+        android:id="@+id/unit_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="start"
+        app:layout_constraintEnd_toStartOf="@+id/product_count_tv"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@+id/product_name_textView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/product_count_tv"
@@ -26,11 +36,12 @@
         android:layout_margin="@dimen/_5sdp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
+        android:maxLength="4"
         android:textSize="@dimen/_15sdp"
         app:layout_constraintBottom_toBottomOf="@id/product_name_textView"
         app:layout_constraintEnd_toStartOf="@+id/edit"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/product_name_textView"
+        app:layout_constraintStart_toEndOf="@+id/unit_name_textView"
         app:layout_constraintTop_toTopOf="@id/product_name_textView"
         tools:text="15" />
 

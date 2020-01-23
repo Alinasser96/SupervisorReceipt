@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,11 +15,13 @@ import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.databinding.ActivityFinalReceiptBinding
 import com.alyndroid.supervisorreceipt.helpers.SharedPref
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
+import com.alyndroid.supervisorreceipt.helpers.buildWifiDialog
 import com.alyndroid.supervisorreceipt.pojo.ItemData
 import com.alyndroid.supervisorreceipt.ui.addItems.AddItemsActivity
 import com.alyndroid.supervisorreceipt.ui.base.BaseActivity
 import com.alyndroid.supervisorreceipt.ui.editItem.EditItemActivity
 import com.alyndroid.supervisorreceipt.ui.filters.FiltersActivity
+import com.shreyaspatil.MaterialDialog.MaterialDialog
 import kotlinx.android.synthetic.main.activity_final_receipt.*
 
 
@@ -30,15 +33,17 @@ class FinalReceiptActivity : BaseActivity() {
     private lateinit var itemList: MutableList<ItemData>
     private lateinit var familiesList: MutableList<String>
     private lateinit var adapter: FamiliesAdapter
+    private lateinit var add: MenuItem
+    private lateinit var type: String
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.home_menu, menu)
         val print = menu.findItem(R.id.action_fav)
         val confirm = menu.findItem(R.id.confirm_invoice)
-        val add = menu.findItem(R.id.action_add)
-        val type = SharedPreference(this).getValueString("type")
+        add = menu.findItem(R.id.action_add)
+        type = SharedPreference(this).getValueString("type")!!
         print.isVisible = type == "sm"
-        confirm.isVisible = type == "sv"
-        add.isVisible = type == "sv"
+        confirm.isVisible = type == "sv" && !intent.getBooleanExtra("areShown", false)
+        add.isVisible = type == "sv" && !intent.getBooleanExtra("areShown", false)
         return true
     }
 
@@ -59,37 +64,42 @@ class FinalReceiptActivity : BaseActivity() {
     }
 
     private fun printAction() {
-        val alertDialogBuilder = AlertDialog.Builder(this)
+        val alertDialogBuilder = MaterialDialog.Builder(this)
         alertDialogBuilder.setMessage("هل أنت متأكد من تأكيد الفاتورة؟")
             .setCancelable(false)
             .setPositiveButton(
                 "نعم"
-            ) { dialog, id ->
-                viewModel.sendSalesmanInvoice(itemList
-                ,SharedPreference(this).getValueString("salesman_no")!!
-                ,intent.getStringExtra("customerNo")!!)
+            ) { _, _ ->
+                viewModel.sendSalesmanInvoice(
+                    itemList
+                    , SharedPreference(this).getValueString("salesman_no")!!
+                    , intent.getStringExtra("customerNo")!!
+                )
             }
         alertDialogBuilder.setNegativeButton(
             "لا"
-        ) { dialog, id -> dialog.cancel() }
-        val alert = alertDialogBuilder.create()
+        ) { dialog, _ -> dialog.cancel() }
+        val alert = alertDialogBuilder.build()
         alert.show()
     }
 
 
     private fun confirmAction() {
-        val alertDialogBuilder = AlertDialog.Builder(this)
+        val alertDialogBuilder = MaterialDialog.Builder(this)
         alertDialogBuilder.setMessage("هل أنت متأكد من تأكيد الفاتورة؟")
             .setCancelable(false)
             .setPositiveButton(
                 "نعم"
-            ) { dialog, id ->
-                viewModel.sendSupervisorInvoice(itemList, SharedPreference(this).getValueString("salesman_no")!!)
+            ) { _, _ ->
+                viewModel.sendSupervisorInvoice(
+                    itemList,
+                    SharedPreference(this).getValueString("salesman_no")!!
+                )
             }
         alertDialogBuilder.setNegativeButton(
             "لا"
-        ) { dialog, id -> dialog.cancel() }
-        val alert = alertDialogBuilder.create()
+        ) { dialog, _ -> dialog.cancel() }
+        val alert = alertDialogBuilder.build()
         alert.show()
     }
 
@@ -116,39 +126,51 @@ class FinalReceiptActivity : BaseActivity() {
             map = intent.getSerializableExtra("adapter") as HashMap<Any, Any>
         }
 
-        adapter = FamiliesAdapter(this, ItemsEditableAdapter.ItemClickListener {
-            val intent = Intent(this, EditItemActivity::class.java)
-            intent.putExtra("id", it.id.toString())
-            intent.putExtra("count", it.quantity)
-            startActivityForResult(intent, 1000)
+        adapter = FamiliesAdapter(this, intent.getBooleanExtra("areShown", false),
+            ItemsEditableAdapter.ItemClickListener {
+                val intent = Intent(this, EditItemActivity::class.java)
+                intent.putExtra("item", it)
+                startActivityForResult(intent, 1000)
+            })
+
+
+        viewModel.empty.observe(this, Observer {
+            not_confirmed_invoice_textView.isVisible = it
         })
 
-
-
         viewModel.response.observe(this, Observer { it1 ->
-            var it = it1
+            var it = it1.items
+            add.isVisible = it1.type!="no_edit" && type == "sv" && !intent.getBooleanExtra("areShown", false)
             if (SharedPreference(this).getValueString("type") == "sm") {
-                it = it1.filter { d -> d.item_type == "old" }.toMutableList()
+                it = it1.items.filter { d -> d.item_type == "old" }.toMutableList()
                 it.addAll(intent.getSerializableExtra("newList") as Collection<ItemData>)
             }
+
             val list = it.toMutableList()
             itemList = list
-            adapter.setMatches(it)
+
             familiesList = it.map { it.itemcategory }.distinct().toMutableList()
-            adapter.submitList(familiesList)
+            adapter.apply {
+                setItems(it)
+                submitList(familiesList)
+                setType(it1.type)
+            }
             if (SharedPreference(this).getValueString("type") == "sm") {
-                for (i in it) {
+                for (i in it.filter { d -> d.item_type == "old" }) {
                     if (map[i.itemname] as Int == 0) {
                         i.quantity =
-                            (i.quantity.toInt() * SharedPreference(this).getValueString(SharedPref.gard_number)!!.toDouble()).toInt()
+                            (i.quantity.toDouble() * SharedPreference(this).getValueString(
+                                SharedPref.gard_number
+                            )!!.toDouble())
                                 .toString()
                     } else {
-                        i.quantity = (i.quantity.toInt() - map[i.itemname] as Int).toString()
+                        i.quantity = (i.quantity.toDouble() - map[i.itemname] as Int).toString()
                     }
                 }
             }
             it.forEach { i ->
                 i.editedQuantity = i.quantity
+                i.default_unit = i.small_unit
                 i.status = 0
             }
         })
@@ -156,11 +178,21 @@ class FinalReceiptActivity : BaseActivity() {
         binding.familiesRecycler.adapter = adapter
 
 
+        viewModel.fromSV.observe(this, Observer {
+            not_confirmed_invoice_textView.isVisible = !it
+        })
+
         viewModel.loading.observe(this, Observer {
             if (it) {
                 progressBarFinal.visibility = View.VISIBLE
             } else {
                 progressBarFinal.visibility = View.GONE
+            }
+        })
+
+        viewModel.error.observe(this, Observer {
+            when (it) {
+                1 -> buildWifiDialog(this)
             }
         })
 
@@ -192,7 +224,6 @@ class FinalReceiptActivity : BaseActivity() {
         when (requestCode) {
             1000 -> when (resultCode) {
                 RESULT_OK -> {
-                    //do your work here
                     Toast.makeText(this, data?.getStringExtra("id"), Toast.LENGTH_SHORT).show()
                     itemList.find { it.id == data?.getStringExtra("id")!!.toInt() }?.apply {
                         editedQuantity = data?.getStringExtra("edited")!!
@@ -203,7 +234,7 @@ class FinalReceiptActivity : BaseActivity() {
                         }
                         reason = data.getStringExtra("reason")!!
                     }
-                    adapter.setMatches(itemList)
+                    adapter.setItems(itemList)
                     adapter.notifyDataSetChanged()
 
                 }
@@ -225,7 +256,7 @@ class FinalReceiptActivity : BaseActivity() {
                             , itemcategory = data.getStringExtra("Family")!!
                         )
                     )
-                    adapter.setMatches(itemList)
+                    adapter.setItems(itemList)
                     adapter.notifyDataSetChanged()
 
                 }

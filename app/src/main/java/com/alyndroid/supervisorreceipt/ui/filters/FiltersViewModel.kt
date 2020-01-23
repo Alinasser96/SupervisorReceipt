@@ -33,7 +33,6 @@ class FiltersViewModel: ViewModel() {
             val loginDeferred = ApiInterface.SNBApi.retrofitService.getAllCustomersAsync(code)
             try {
                 val stringResult = loginDeferred.await()
-                _response.value = stringResult.data
                 _allResponse.value = stringResult
                 _loading.value = false
             } catch (e: Exception) {

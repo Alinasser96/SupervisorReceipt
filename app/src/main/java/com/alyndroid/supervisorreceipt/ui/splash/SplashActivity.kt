@@ -12,6 +12,7 @@ import com.alyndroid.supervisorreceipt.BuildConfig
 import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.helpers.SharedPref
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
+import com.alyndroid.supervisorreceipt.helpers.buildWifiDialog
 import com.alyndroid.supervisorreceipt.ui.filters.FiltersActivity
 import com.alyndroid.supervisorreceipt.ui.login.LoginActivity
 import com.alyndroid.supervisorreceipt.ui.login.LoginViewModel
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        viewModel.checkVersion()
+
 
         viewModel.response.observe(this, Observer {
             if (it.status) {
@@ -48,6 +49,11 @@ class SplashActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.error.observe(this, Observer {
+            when(it){
+                1-> buildWifiDialog(this)
+            }
+        })
 
         viewModel.settingsResponse.observe(this, Observer {
             SharedPreference(this).save(SharedPref.app_version, it.app_version)
@@ -99,5 +105,10 @@ class SplashActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkVersion()
     }
 }

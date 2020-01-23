@@ -17,7 +17,11 @@ data class ItemData(
     var editedQuantity: String = quantity,
     val salesmanname: String="",
     var reason: String = "",
-    var invoice_id: String = "",
+    var invoice_id: Int = 0,
     var status: Int = 0,
-    val salesmanno: String=""
-): Parcelable
+    val salesmanno: String="",
+    val small_unit: String="",
+    val large_unit: String="",
+    var default_unit: String="",
+    val unit_factor: Int=-1
+):Parcelable

@@ -28,6 +28,7 @@ class SalesMenActivity : BaseActivity() {
         val adapter = SalesMenAdapter(this, SalesMenAdapter.SalesManClickListener {
             val intent = Intent(this, FiltersActivity::class.java)
             intent.putExtra("salesManNo", it.SubordinateId)
+            intent.putExtra("salesManName", it.salesmannamea)
             startActivity(intent)
         })
         salesmen_recyclerView.adapter = adapter

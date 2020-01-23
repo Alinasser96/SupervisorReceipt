@@ -12,12 +12,13 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
+import com.alyndroid.supervisorreceipt.pojo.All
 import com.alyndroid.supervisorreceipt.pojo.CustomersData
 import com.alyndroid.supervisorreceipt.pojo.CustomersResponse
 import com.alyndroid.supervisorreceipt.ui.base.BaseActivity
@@ -35,42 +36,50 @@ import com.google.android.gms.maps.model.MarkerOptions
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener
 import kotlinx.android.synthetic.main.activity_map.*
 
-class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
+class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
+    CompoundButton.OnCheckedChangeListener {
 
-    val PERMISSION_ID = 42
+
+    private val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     var currentLatLong: LatLng? = null
     var currentLocation: Location? = null
     private var googleMap: GoogleMap? = null
-    lateinit var customers: List<CustomersData>
+    private lateinit var customers: List<All>
+    var newCustomers = mutableListOf<All>()
+    var editedCustomers = mutableListOf<All>()
+    lateinit var usedCustomers: CustomersData
+    private val nearbyCustomers = mutableListOf<All>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         title = getString(R.string.customers_Map)
         progressBar.visibility = View.VISIBLE
-        customers = intent.getParcelableExtra<CustomersResponse>("customers").data
+        usedCustomers = intent.getParcelableExtra<CustomersResponse>("customers")!!.data
+        customers = usedCustomers.all
+        formatCustomers()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        val adapter = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item, customers.map { s -> s.customernamea }
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        names_spinner.setAdapter(adapter)
-        names_spinner.setOnItemSelectedListener(this)
+        chip.setOnCheckedChangeListener(this)
+        new_customers_chip.setOnCheckedChangeListener(this)
+        edited_customers_chip.setOnCheckedChangeListener(this)
+        all_customers_chip.setOnCheckedChangeListener(this)
+        all_customers_chip.isClickable = false
 
     }
 
+
     override fun onResume() {
         super.onResume()
+        chip.isChecked = false
         getLastLocation()
     }
 
     override fun onMapReady(p0: GoogleMap?) {
-        getLastLocation()
         googleMap = p0
         progressBar.visibility = View.GONE
     }
@@ -108,7 +117,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
     ) {
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                // Granted. Start getting the location information
                 getLastLocation()
             }
         }
@@ -126,72 +134,12 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
     private fun getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     val location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        currentLatLong = LatLng(location.latitude, location.longitude)
-                        currentLocation = Location("")
-                        currentLocation!!.latitude = location.latitude
-                        currentLocation!!.longitude = location.longitude
-                        val markerOptions: MarkerOptions =
-                            MarkerOptions().position(currentLatLong!!).title("your location")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_icon))
-
-                        val distances = mutableListOf<Float>()
-                        for (customer in customers) {
-                            if (customer.latitude != null) {
-                                val location = Location("")
-                                location.latitude = customer.latitude.toDouble()
-                                location.longitude = customer.longitude!!.toDouble()
-                                distances.add(currentLocation!!.distanceTo(location))
-                                val markerOptions: MarkerOptions = MarkerOptions().position(
-                                    LatLng(
-                                        customer.latitude.toDouble(),
-                                        customer.longitude.toDouble()
-                                    )
-                                ).title(customer.customernamea).snippet(customer.customerno)
-                                googleMap!!.addMarker(markerOptions).showInfoWindow()
-                            }
-                        }
-                        val builder = LatLngBounds.Builder()
-                        if (distances.isEmpty())
-                            finish()
-                        for (i in 0..4) {
-                            val minDistance = distances.min()!!
-                            val customer = customers[distances.indexOf(minDistance)]
-                            builder.include(
-                                LatLng(
-                                    customer.latitude!!.toDouble(),
-                                    customer.longitude!!.toDouble()
-                                )
-                            )
-                            distances[distances.indexOf(minDistance)] = distances.max()!!
-                        }
-                        builder.include(currentLatLong)
-
-                        googleMap.let {
-                            it!!.addMarker(markerOptions).showInfoWindow()
-                            it.setOnInfoWindowClickListener {
-                                if (it.title != "your location") {
-                                    if (SharedPreference(this).getValueString("type") == "sm") {
-                                        val intent = Intent(this, GardActivity::class.java)
-                                        intent.putExtra("customerNo", it.snippet)
-                                        intent.putExtra("customerName", it.title)
-                                        startActivity(intent)
-                                    } else {
-                                        val intent = Intent(this, FinalReceiptActivity::class.java)
-                                        intent.putExtra("customerNo", it.snippet)
-                                        intent.putExtra("customerName", it.title)
-                                        startActivity(intent)
-                                    }
-                                }
-                            }
-                            it.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 120))
-                        }
-
+                        setupMap(location, false)
                     }
                 }
             } else {
@@ -201,7 +149,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
             requestPermissions()
         }
     }
-
 
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
@@ -221,55 +168,11 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation: Location = locationResult.lastLocation
-            currentLatLong = LatLng(mLastLocation.latitude, mLastLocation.longitude)
-            val markerOptions: MarkerOptions =
-                MarkerOptions().position(currentLatLong!!).title("your location")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_icon))
-            for (customer in customers) {
-                if (customer.latitude != null) {
-                    val markerOptions: MarkerOptions = MarkerOptions().position(
-                        LatLng(
-                            customer.latitude.toDouble(),
-                            customer.longitude!!.toDouble()
-                        )
-                    ).title(customer.customernamea)
-                    googleMap!!.addMarker(markerOptions).showInfoWindow()
-                }
-            }
-            val distances = mutableListOf<Float>()
-            val builder = LatLngBounds.Builder()
-            if (distances.isEmpty())
-                finish()
-            for (i in 0..4) {
-                val minDistance = distances.min()!!
-                val customer = customers[distances.indexOf(minDistance)]
-                builder.include(
-                    LatLng(
-                        customer.latitude!!.toDouble(),
-                        customer.longitude!!.toDouble()
-                    )
-                )
-                distances[distances.indexOf(minDistance)] = distances.max()!!
-            }
-            builder.include(currentLatLong)
-
-            googleMap.let {
-                it!!.addMarker(markerOptions).showInfoWindow()
-                it.setOnInfoWindowClickListener {
-                    if (it.title != "your location") {
-                        val intent = Intent(this@MapActivity, FinalReceiptActivity::class.java)
-                        intent.putExtra("customerNo", it.snippet)
-                        intent.putExtra("customerName", it.title)
-                        startActivity(intent)
-                    }
-                }
-                it.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 120))
-            }
+            setupMap(mLastLocation, false)
         }
     }
 
-
-    fun buildLocationDialog(context: Context) {
+    private fun buildLocationDialog(context: Context) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Enable Your Location")
             .setMessage("we need to access your location so you should enable it?")
@@ -286,8 +189,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
             .show()
     }
 
-    override fun onNothingSelected() {
-    }
+    override fun onNothingSelected() {}
 
     override fun onItemSelected(view: View?, position: Int, id: Long) {
         if (SharedPreference(this).getValueString("type") == "sm") {
@@ -297,12 +199,205 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener {
             startActivity(intent)
         } else {
             val intent = Intent(this, FinalReceiptActivity::class.java)
-            intent.putExtra("customerNo", customers[position].customerno)
-            intent.putExtra("customerName", customers[position].customernamea)
+            if (chip.isChecked) {
+                intent.putExtra("customerNo", customers[position].customerno)
+                intent.putExtra("customerName", customers[position].customernamea)
+            } else {
+                intent.putExtra("customerNo", nearbyCustomers[position].customerno)
+                intent.putExtra("customerName", nearbyCustomers[position].customernamea)
+            }
+            intent.putExtra("areShown", chip.isChecked)
             startActivity(intent)
         }
     }
 
+    private fun setupMap(location: Location, showAll: Boolean) {
+        if (googleMap != null)
+            googleMap!!.clear()
+        if (customers.isEmpty())
+        { Toast.makeText(this, "لا يوجد عملاء حاليين", Toast.LENGTH_LONG).show()
+            names_spinner.setAdapter(null)
+            return}
+        nearbyCustomers.clear()
+        currentLatLong = LatLng(location.latitude, location.longitude)
+        currentLocation = Location("")
+        currentLocation!!.latitude = location.latitude
+        currentLocation!!.longitude = location.longitude
+        val markerOptions: MarkerOptions =
+            MarkerOptions().position(currentLatLong!!).title("your location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_icon))
+
+        val distances = mutableListOf<Float>()
+        val builder = LatLngBounds.Builder()
+        for (customer in customers) {
+            if (customer.latitude != null) {
+                val location = Location("")
+                location.latitude = customer.latitude.toDouble()
+                location.longitude = customer.longitude!!.toDouble()
+                distances.add(currentLocation!!.distanceTo(location))
+                val markerOptions: MarkerOptions = MarkerOptions().position(
+                    LatLng(
+                        customer.latitude.toDouble(),
+                        customer.longitude.toDouble()
+                    )
+                ).title(customer.customernamea).snippet(customer.customerno)
+                if (showAll) {
+                    builder.include(
+                        LatLng(
+                            customer.latitude.toDouble(),
+                            customer.longitude.toDouble()
+                        )
+                    )
+                    googleMap!!.addMarker(markerOptions).showInfoWindow()
+                }
+            }
+        }
+
+
+        if (distances.isEmpty())
+            finish()
+
+
+        if (!showAll) {
+            for (i in 0..4) {
+                val minDistance = distances.min()!!
+                if (minDistance > 100)
+                    break
+                val customer = customers[distances.indexOf(minDistance)]
+                nearbyCustomers.add(customer)
+                builder.include(
+                    LatLng(
+                        customer.latitude!!.toDouble(),
+                        customer.longitude!!.toDouble()
+                    )
+                )
+                val markerOptions: MarkerOptions = MarkerOptions().position(
+                    LatLng(
+                        customer.latitude.toDouble(),
+                        customer.longitude.toDouble()
+                    )
+                ).title(customer.customernamea).snippet(customer.customerno)
+                googleMap!!.addMarker(markerOptions).showInfoWindow()
+                distances[distances.indexOf(minDistance)] = distances.max()!!
+
+
+            }
+
+
+            val adapter = ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item, nearbyCustomers.map { s -> s.customernamea }
+            )
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            names_spinner.setAdapter(adapter)
+            names_spinner.setOnItemSelectedListener(this)
+            if (nearbyCustomers.isEmpty()) {
+                googleMap!!.addMarker(markerOptions).showInfoWindow()
+                googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 17f))
+                Toast.makeText(this, "no nearby customers", Toast.LENGTH_LONG).show()
+                return
+            }
+        }
+
+        builder.include(currentLatLong)
+
+        googleMap.let {
+            it!!.addMarker(markerOptions).showInfoWindow()
+            it.setOnInfoWindowClickListener {
+                if (it.title != "your location") {
+                    if (SharedPreference(this).getValueString("type") == "sm") {
+                        val intent = Intent(this, GardActivity::class.java)
+                        intent.putExtra("customerNo", it.snippet)
+                        intent.putExtra("customerName", it.title)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, FinalReceiptActivity::class.java)
+                        intent.putExtra("customerNo", it.snippet)
+                        intent.putExtra("customerName", it.title)
+                        intent.putExtra("areShown", showAll)
+                        startActivity(intent)
+                    }
+                }
+            }
+            if (showAll) {
+                it.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 120))
+            } else {
+                it.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 350))
+            }
+        }
+
+    }
+
+    override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+
+        when (p0!!.id) {
+            R.id.chip -> {
+                if (googleMap != null)
+                    googleMap!!.clear()
+                if (p1) {
+                    setupMap(currentLocation!!, true)
+                } else {
+                    setupMap(currentLocation!!, false)
+                }
+            }
+            R.id.new_customers_chip -> {
+                if (p1) {
+                    Toast.makeText(this, "new checked", Toast.LENGTH_LONG).show()
+                    all_customers_chip.isClickable = true
+                    new_customers_chip.isClickable = false
+                    edited_customers_chip.isClickable = true
+                    customers = newCustomers
+                    setupMap(currentLocation!!, chip.isChecked)
+                } else {
+                }
+            }
+            R.id.edited_customers_chip -> {
+                if (p1) {
+                    Toast.makeText(this, "edited checked", Toast.LENGTH_LONG).show()
+                    all_customers_chip.isClickable = true
+                    new_customers_chip.isClickable = true
+                    edited_customers_chip.isClickable = false
+                    customers = editedCustomers
+                    setupMap(currentLocation!!, chip.isChecked)
+                } else {
+                }
+            }
+            R.id.all_customers_chip -> {
+                if (p1) {
+                    Toast.makeText(this, "all checked", Toast.LENGTH_LONG).show()
+                    all_customers_chip.isClickable = false
+                    new_customers_chip.isClickable = true
+                    edited_customers_chip.isClickable = true
+                    customers = usedCustomers.all
+                    setupMap(currentLocation!!, chip.isChecked)
+                } else {
+                }
+            }
+        }
+        if (p1) {
+            if (chip.isChecked) {
+                val adapter = ArrayAdapter<String>(
+                    this,
+                    android.R.layout.simple_spinner_item, customers.map { s -> s.customernamea }
+                )
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                names_spinner.setAdapter(adapter)
+                names_spinner.setOnItemSelectedListener(this)
+            }
+        }
+    }
+
+
+    private fun formatCustomers() {
+        for (i in customers) {
+            if (usedCustomers.new.map { c -> c.customerno }.contains(i.customerno)) {
+                newCustomers.add(i)
+            }
+            if (usedCustomers.new_items.map { c -> c.customerno }.distinct().contains(i.customerno)) {
+                editedCustomers.add(i)
+            }
+        }
+    }
 
 }
 

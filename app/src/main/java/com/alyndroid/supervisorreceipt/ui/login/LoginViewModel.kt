@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alyndroid.supervisorreceipt.data.ApiInterface
+import com.alyndroid.supervisorreceipt.helpers.handleError
 import com.alyndroid.supervisorreceipt.pojo.LoginResponse
 import com.alyndroid.supervisorreceipt.pojo.SettingsData
 import com.alyndroid.supervisorreceipt.pojo.UserData
@@ -25,6 +26,10 @@ class LoginViewModel: ViewModel() {
     val loading: LiveData<Boolean>
         get() = _loading
 
+    private val _error = MutableLiveData<Int>()
+    val error: LiveData<Int>
+        get() = _error
+
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -40,8 +45,7 @@ class LoginViewModel: ViewModel() {
                 _response.value = stringResult
                 _loading.value = false
             } catch (e: Exception) {
-                _response.value =
-                    LoginResponse(UserData("", 0, "",""), "error", false)
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }
@@ -56,8 +60,7 @@ class LoginViewModel: ViewModel() {
                 _settingsResponse.value = stringResult.data[0]
                 _loading.value = false
             } catch (e: Exception) {
-                _response.value =
-                    LoginResponse(UserData("", 0, "",""), "error", false)
+                _error.value = handleError(e)
                 _loading.value = false
             }
         }

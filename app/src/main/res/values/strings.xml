@@ -58,7 +58,7 @@
     <string name="select_family">اختر العائلة</string>
     <string name="select_item">اختر الصنف</string>
     <string name="quantity">الكمية:</string>
-    <string name="no_confirmed_invoice">لم يتم تفعيل فاتورة لهذا العميل</string>
+    <string name="no_confirmed_invoice">لم يتم عمل فاتورة لهذا العميل \n برجاء الاتصال بالعمليات</string>
     <string name="superVisorApp">صفحة المشرف الرئيسية</string>
     <string name="SalesManApp">صفحة المندوب الرئيسية</string>
     <string name="chooseSalesMan">اختيار المندوب</string>
@@ -69,4 +69,16 @@
     <string name="update_version">قم بتحديث البرنامج</string>
     <string name="update_version_available">يوجد تحديث لبرنامج الكشكول، من فضلك قم به حتي يمكنك الدخول</string>
     <string name="update">تحديث</string>
+    <string name="show_all_customers">عرض الكل</string>
+    <string name="item"> الصنف: </string>
+    <string name="not_confirmed_invoice_hint">ملحوظة: لم يتم تأكيد المشرف على هذه الفاتورة</string>
+    <string name="no_internet_title">إنك بدون إتصال بالأنترنت!!</string>
+    <string name="no_internet_msg">يجب عليك تفعيل التصال بالإنترنت للمتابعة \n هل تريد تفعيله؟ </string>
+    <string name="open_wifi_now">نعم, تفعيل الآن</string>
+    <string name="connect_to_wifi">الاتصال..</string>
+    <string name="not_now">لا, ليس الآن</string>
+    <string name="disagree_msg">تم رفض الاتصال</string>
+    <string name="all_customers">كل العملاء</string>
+    <string name="new_customers">عملاء جدد</string>
+    <string name="edited_cutomers">عملاء معدلين</string>
 </resources>

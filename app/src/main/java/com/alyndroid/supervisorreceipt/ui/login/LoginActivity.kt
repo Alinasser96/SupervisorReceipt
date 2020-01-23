@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.databinding.ActivityLoginBinding
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
+import com.alyndroid.supervisorreceipt.helpers.buildWifiDialog
 import com.alyndroid.supervisorreceipt.pojo.SalesMenResponse
 import com.alyndroid.supervisorreceipt.ui.filters.FiltersActivity
 import com.alyndroid.supervisorreceipt.ui.map.MapActivity
@@ -48,10 +49,14 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.error.observe(this, Observer {
+            when(it){
+                1-> buildWifiDialog(this)
+            }
+        })
 
         viewModel.response.observe(this, Observer {
             if (it.status) {
-
                 SharedPreference(this).save("name", it.data.name)
                 SharedPreference(this).save("password", binding.passwordEditText.text.toString())
                 SharedPreference(this).save("user_id", it.data.id)
