@@ -216,7 +216,11 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             googleMap!!.clear()
         if (customers.isEmpty())
         { Toast.makeText(this, "لا يوجد عملاء حاليين", Toast.LENGTH_LONG).show()
-            names_spinner.setAdapter(null)
+            val adapter = ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item, emptyList()
+            )
+            names_spinner.setAdapter(adapter)
             return}
         nearbyCustomers.clear()
         currentLatLong = LatLng(location.latitude, location.longitude)
@@ -393,7 +397,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             if (usedCustomers.new.map { c -> c.customerno }.contains(i.customerno)) {
                 newCustomers.add(i)
             }
-            if (usedCustomers.new_items.map { c -> c.customerno }.distinct().contains(i.customerno)) {
+            if (usedCustomers.new_item.map { c -> c.customerno }.distinct().contains(i.customerno)) {
                 editedCustomers.add(i)
             }
         }

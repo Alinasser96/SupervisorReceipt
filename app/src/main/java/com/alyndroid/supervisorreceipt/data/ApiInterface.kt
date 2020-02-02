@@ -10,7 +10,7 @@ import retrofit2.http.*
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
-    .baseUrl("http://prohussein.com/snb/public/api/")
+    .baseUrl("http://snb.waritex.org/api/")
     .build()
 
 interface ApiInterface {

@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 data class CustomersData(
     val all: List<All>,
     val new: List<New>,
-    val new_items: List<NewItem>
+    val new_item: List<NewItem>
 ):Parcelable
