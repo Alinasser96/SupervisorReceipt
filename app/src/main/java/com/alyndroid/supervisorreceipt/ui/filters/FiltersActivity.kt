@@ -1,5 +1,7 @@
 package com.alyndroid.supervisorreceipt.ui.filters
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -14,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
+import com.alyndroid.supervisorreceipt.helpers.logoutAction
 import com.alyndroid.supervisorreceipt.pojo.CustomersResponse
 import com.alyndroid.supervisorreceipt.ui.base.BaseActivity
 import com.alyndroid.supervisorreceipt.ui.login.LoginActivity
@@ -90,6 +93,7 @@ class FiltersActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
             }
         })
 
+
         toolbar = filters_toolbar
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(Color.TRANSPARENT)
@@ -137,31 +141,13 @@ class FiltersActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when (p0.itemId) {
-            R.id.logout -> logoutAction()
+            R.id.logout -> logoutAction(this)
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
-    private fun logoutAction() {
-        val alertDialogBuilder = MaterialDialog.Builder(this)
-        alertDialogBuilder.setMessage("هل أنت متأكد من تسجيل الخروج ؟")
-            .setCancelable(false)
-            .setPositiveButton(
-                "نعم"
-            ) { dialog, id ->
-                //here
-                SharedPreference(this).logout()
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-            .setNegativeButton(
-                "لا"
-            ) { dialog, id -> dialog.cancel() }
-            .build()
-            .show()
-    }
+
 
 
 }

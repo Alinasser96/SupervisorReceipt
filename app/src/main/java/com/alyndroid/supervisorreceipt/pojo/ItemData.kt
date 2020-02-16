@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ItemData(
+open class ItemData(
     val customername: String="",
     val customerno: String="",
     val id: Int=-1,
@@ -23,5 +23,6 @@ data class ItemData(
     val small_unit: String="",
     val large_unit: String="",
     var default_unit: String="",
+    var isEditedItem: Boolean= false,
     val unit_factor: Int=-1
 ):Parcelable

@@ -41,6 +41,7 @@ class NewItemsActivity : BaseActivity() {
                     val intent2 = Intent(this, FinalReceiptActivity::class.java)
                     intent2.putExtra("adapter", intent.getSerializableExtra("adapter"))
                     intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
+                    intent2.putExtra("customerName", intent.getStringExtra("customerName"))
                     intent2.putExtra("newList", list as ArrayList)
                     startActivity(intent2)
                 } else {
@@ -53,6 +54,7 @@ class NewItemsActivity : BaseActivity() {
                     val intent2 = Intent(this, FinalReceiptActivity::class.java)
                     intent2.putExtra("adapter", intent.getSerializableExtra("adapter"))
                     intent2.putExtra("newList", list as ArrayList)
+                    intent2.putExtra("customerName", intent.getStringExtra("customerName"))
                     intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
                     startActivity(intent2)
                 }

@@ -394,7 +394,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
 
     private fun formatCustomers() {
         for (i in customers) {
-            if (usedCustomers.new.map { c -> c.customerno }.contains(i.customerno)) {
+            if (usedCustomers.new.contains(i.customerno)) {
                 newCustomers.add(i)
             }
             if (usedCustomers.new_item.map { c -> c.customerno }.distinct().contains(i.customerno)) {

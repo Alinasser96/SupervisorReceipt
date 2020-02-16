@@ -96,6 +96,8 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
             intent.putExtra("itemNo", itemsList[items_spinner.selectedPosition].ItemNo)
             intent.putExtra("count", editedItem_editText.text.toString())
             intent.putExtra("reason", reason_ET.text.toString())
+            intent.putExtra("factor", itemsList[items_spinner.selectedPosition].unit_factor)
+            intent.putExtra("unit", itemsList[items_spinner.selectedPosition].small_unit)
             setResult(Activity.RESULT_OK, intent)
             finish()
             } else {

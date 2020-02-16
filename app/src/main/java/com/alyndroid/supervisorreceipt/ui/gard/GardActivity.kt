@@ -126,8 +126,9 @@ class GardActivity : BaseActivity() {
             .setCancelable(false)
                 .setPositiveButton(
                     "نعم"
-                ) { _, _ ->
+                ) { dialog, _ ->
                     viewModel.sendGard(gardMap)
+                    dialog.cancel()
                 }
             .setNegativeButton(
                 "لا"

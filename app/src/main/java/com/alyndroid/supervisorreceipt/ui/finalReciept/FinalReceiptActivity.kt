@@ -21,8 +21,10 @@ import com.alyndroid.supervisorreceipt.ui.addItems.AddItemsActivity
 import com.alyndroid.supervisorreceipt.ui.base.BaseActivity
 import com.alyndroid.supervisorreceipt.ui.editItem.EditItemActivity
 import com.alyndroid.supervisorreceipt.ui.filters.FiltersActivity
+import com.alyndroid.supervisorreceipt.ui.print.BluetoothDevicesListActivity
 import com.shreyaspatil.MaterialDialog.MaterialDialog
 import kotlinx.android.synthetic.main.activity_final_receipt.*
+import kotlin.math.roundToInt
 
 
 class FinalReceiptActivity : BaseActivity() {
@@ -69,12 +71,13 @@ class FinalReceiptActivity : BaseActivity() {
             .setCancelable(false)
             .setPositiveButton(
                 "نعم"
-            ) { _, _ ->
+            ) { dialog, _ ->
                 viewModel.sendSalesmanInvoice(
                     itemList
                     , SharedPreference(this).getValueString("salesman_no")!!
                     , intent.getStringExtra("customerNo")!!
                 )
+                dialog.cancel()
             }
         alertDialogBuilder.setNegativeButton(
             "لا"
@@ -90,11 +93,12 @@ class FinalReceiptActivity : BaseActivity() {
             .setCancelable(false)
             .setPositiveButton(
                 "نعم"
-            ) { _, _ ->
+            ) { dialog, _ ->
                 viewModel.sendSupervisorInvoice(
                     itemList,
                     SharedPreference(this).getValueString("salesman_no")!!
                 )
+                dialog.cancel()
             }
         alertDialogBuilder.setNegativeButton(
             "لا"
@@ -135,11 +139,21 @@ class FinalReceiptActivity : BaseActivity() {
 
 
         viewModel.empty.observe(this, Observer {
-            not_confirmed_invoice_textView.isVisible = it
+            empty_msg_tv.isVisible = it
         })
 
         viewModel.response.observe(this, Observer { it1 ->
-            var it = it1.items
+            val new = it1.new
+            var it = it1.items.toMutableList()
+            if (new != null && new.isNotEmpty()){
+                new.forEach {
+                    it.isEditedItem = true
+                }
+                it.addAll(new)
+            }
+
+
+
             add.isVisible = it1.type!="no_edit" && type == "sv" && !intent.getBooleanExtra("areShown", false)
             if (SharedPreference(this).getValueString("type") == "sm") {
                 it = it1.items.filter { d -> d.item_type == "old" }.toMutableList()
@@ -158,10 +172,9 @@ class FinalReceiptActivity : BaseActivity() {
             if (SharedPreference(this).getValueString("type") == "sm") {
                 for (i in it.filter { d -> d.item_type == "old" }) {
                     if (map[i.itemname] as Int == 0) {
-                        i.quantity =
-                            (i.quantity.toDouble() * SharedPreference(this).getValueString(
-                                SharedPref.gard_number
-                            )!!.toDouble())
+                        i.quantity = (i.quantity.toDouble() * SharedPreference(this).getValueString(
+                            SharedPref.gard_number
+                        )!!.toDouble()).roundToInt()
                                 .toString()
                     } else {
                         i.quantity = (i.quantity.toDouble() - map[i.itemname] as Int).toString()
@@ -211,8 +224,10 @@ class FinalReceiptActivity : BaseActivity() {
         viewModel.sendSalesmanInvoiceResponse.observe(this, Observer {
             if (it.status) {
                 Toast.makeText(this, "تم التأكيد بنجاح", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, FiltersActivity::class.java)
-                startActivity(intent)
+                val intent2 = Intent(this, BluetoothDevicesListActivity::class.java)
+                intent2.putExtra("itemList", ArrayList<ItemData>(itemList))
+                intent2.putExtra("customerName", intent.getStringExtra("customerName"))
+                startActivity(intent2)
                 finish()
             } else {
                 Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
@@ -252,6 +267,8 @@ class FinalReceiptActivity : BaseActivity() {
                             , itemno = data.getStringExtra("itemNo")!!
                             , editedQuantity = data.getStringExtra("count")!!
                             , status = 1
+                            , unit_factor = data.getStringExtra("factor")!!.toInt()
+                            , default_unit = data.getStringExtra("unit")!!
                             , reason = data.getStringExtra("reason")!!
                             , itemcategory = data.getStringExtra("Family")!!
                         )

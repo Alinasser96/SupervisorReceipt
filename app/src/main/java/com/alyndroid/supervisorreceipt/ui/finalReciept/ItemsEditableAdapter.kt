@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -51,6 +52,12 @@ class ItemsEditableAdapter(
             }
             notifyDataSetChanged()
         }
+        if (result.isEditedItem){
+            holder.layout.setBackgroundColor(context.getColor(R.color.lime_green))
+            holder.productCountTextView.setTextColor(context.getColor(R.color.white))
+            holder.productNameTextView.setTextColor(context.getColor(R.color.white))
+            holder.wehdaTextView.setTextColor(context.getColor(R.color.white))
+        }
         if (result.editedQuantity.toDouble().toInt() >= 0) {
             holder.productCountTextView.text = result.editedQuantity
             if (result.status == 2) {
@@ -86,6 +93,7 @@ class ItemsEditableAdapter(
         val productCountTextView: TextView = view.product_count_tv
         val editButton: ImageView = view.edit
         val wehdaTextView: TextView = view.unit_name_textView
+        val layout: ConstraintLayout = view.item_constraintLayout
     }
 
     class ItemClickListener(val clickListener: (item: ItemData) -> Unit) {

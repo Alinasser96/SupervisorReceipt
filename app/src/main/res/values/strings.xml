@@ -81,4 +81,5 @@
     <string name="all_customers">كل العملاء</string>
     <string name="new_customers">عملاء جدد</string>
     <string name="edited_cutomers">عملاء معدلين</string>
+    <string name="change_printer">تغيير الطابعة</string>
 </resources>
