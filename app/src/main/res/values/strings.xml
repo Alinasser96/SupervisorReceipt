@@ -82,4 +82,5 @@
     <string name="new_customers">عملاء جدد</string>
     <string name="edited_cutomers">عملاء معدلين</string>
     <string name="change_printer">تغيير الطابعة</string>
+    <string name="no_gard_invoice">لا توجد أصناف قديمة لهذا العميل \n برجاء المتابعة لإضافة أصناف جديدة</string>
 </resources>

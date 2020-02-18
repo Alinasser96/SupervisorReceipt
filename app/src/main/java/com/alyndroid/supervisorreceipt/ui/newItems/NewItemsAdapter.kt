@@ -4,16 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.CheckBox
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alyndroid.supervisorreceipt.R
-import kotlinx.android.synthetic.main.gard_item.view.*
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.CheckBox
 import com.alyndroid.supervisorreceipt.pojo.GardModel
 import com.alyndroid.supervisorreceipt.pojo.ItemData
 import kotlinx.android.synthetic.main.new_item_item.view.*
@@ -21,6 +16,7 @@ import kotlinx.android.synthetic.main.new_item_item.view.*
 
 class NewItemsAdapter(val context: Context, val listner: ItemClickListener) :
     ListAdapter<ItemData, NewItemsAdapter.MatchesViewHolder>(DiffCallback) {
+    private var isSelectedAll: Boolean = false
     public var list:MutableList<GardModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchesViewHolder {
         return MatchesViewHolder(
@@ -35,6 +31,7 @@ class NewItemsAdapter(val context: Context, val listner: ItemClickListener) :
     override fun onBindViewHolder(holder: MatchesViewHolder, position: Int) {
         val result = getItem(position)
         holder.itemNameTextView.text = result.itemname
+        holder.itemNameTextView.isChecked = isSelectedAll
         holder.itemNameTextView.setOnCheckedChangeListener { compoundButton, b ->
             listner.onChecked(result)
         }
@@ -50,6 +47,11 @@ class NewItemsAdapter(val context: Context, val listner: ItemClickListener) :
             return oldItem == newItem
         }
 
+    }
+
+    fun selectAll() {
+        isSelectedAll = true
+        notifyDataSetChanged()
     }
 
     class MatchesViewHolder(view: View) :

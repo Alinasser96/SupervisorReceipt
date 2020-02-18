@@ -130,6 +130,21 @@ class FinalReceiptActivity : BaseActivity() {
             map = intent.getSerializableExtra("adapter") as HashMap<Any, Any>
         }
 
+
+        binding.finalReceiptSwipeToRefreshLayout.setOnRefreshListener {
+            binding.finalReceiptSwipeToRefreshLayout.isRefreshing=false
+            when (SharedPreference(this).getValueString("type")) {
+                "sv" -> {
+                    viewModel.getAllItems(intent.getStringExtra("customerNo")!!)
+                }
+                "sm" -> {
+                    viewModel.getAllItems(
+                        SharedPreference(this).getValueString("salesman_no")!!
+                        , intent.getStringExtra("customerNo")!!
+                    )
+                }
+            }
+        }
         adapter = FamiliesAdapter(this, intent.getBooleanExtra("areShown", false),
             ItemsEditableAdapter.ItemClickListener {
                 val intent = Intent(this, EditItemActivity::class.java)
@@ -198,8 +213,10 @@ class FinalReceiptActivity : BaseActivity() {
         viewModel.loading.observe(this, Observer {
             if (it) {
                 progressBarFinal.visibility = View.VISIBLE
+
             } else {
                 progressBarFinal.visibility = View.GONE
+
             }
         })
 

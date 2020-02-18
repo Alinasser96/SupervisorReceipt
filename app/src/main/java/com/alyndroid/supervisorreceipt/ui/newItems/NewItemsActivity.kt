@@ -29,9 +29,16 @@ class NewItemsActivity : BaseActivity() {
             }
             settText(list.size.toString())
         })
-        adapter.submitList(intent.getSerializableExtra("newList") as MutableList<ItemData>)
+        val newItems = intent.getSerializableExtra("newList") as MutableList<ItemData>
+        adapter.submitList(newItems)
         newItems_recycler.adapter = adapter
 
+
+        if (newItems.size <=  needed.toInt()){
+            adapter.selectAll()
+            list.addAll(newItems)
+            settText(list.size.toString())
+        }
         done_new_button.setOnClickListener {
 
             val arraySize = (intent.getSerializableExtra("newList") as ArrayList<ItemData>).size
