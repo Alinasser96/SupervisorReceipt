@@ -98,6 +98,7 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
             intent.putExtra("reason", reason_ET.text.toString())
             intent.putExtra("factor", itemsList[items_spinner.selectedPosition].unit_factor)
             intent.putExtra("unit", itemsList[items_spinner.selectedPosition].small_unit)
+            intent.putExtra("large_unit", itemsList[items_spinner.selectedPosition].large_unit)
             setResult(Activity.RESULT_OK, intent)
             finish()
             } else {

@@ -8,6 +8,12 @@
         android:title="@string/print" />
 
     <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/refresh_icon"
+        app:showAsAction="ifRoom"
+        android:title="@string/refresh" />
+
+    <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_add_item"
         app:showAsAction="ifRoom"

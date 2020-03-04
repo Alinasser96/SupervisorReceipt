@@ -7,7 +7,6 @@ import com.alyndroid.supervisorreceipt.data.ApiInterface
 import com.alyndroid.supervisorreceipt.helpers.handleError
 import com.alyndroid.supervisorreceipt.pojo.LoginResponse
 import com.alyndroid.supervisorreceipt.pojo.SettingsData
-import com.alyndroid.supervisorreceipt.pojo.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,7 +33,7 @@ class LoginViewModel: ViewModel() {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     fun login(code: String, password: String) {
-        val map = HashMap<String, String>()
+        val map = HashMap<Any, Any>()
         map["salesmanno"] = code
         map["password"] = password
         coroutineScope.launch {

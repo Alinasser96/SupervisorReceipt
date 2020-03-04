@@ -54,8 +54,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/cairo_bold"
                     android:gravity="center"
-                    android:text="@string/gard"
-                    tools:text="جرد الأصناف الفعلية" />
+                    android:text="@string/gard" />
 
             </LinearLayout>
 

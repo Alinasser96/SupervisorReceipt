@@ -4,7 +4,7 @@
     <string name="waritex_products">أصناف شركة واريتكس</string>
     <string name="competitor_products">أصناف المنافسين</string>
     <string name="take_photo">إلتقط صور</string>
-    <string name="gard">جرد الأصناف الفعلية</string>
+    <string name="gard">جرد الأصناف الفعلية (الجرد يتم بالقطعة)</string>
     <string name="confirm">تأكيد</string>
     <string name="print">طباعة</string>
     <string name="edit_reason_hint">برجاء توضيح سبب التعديل جيدا لأنه سيتم دراسته</string>
@@ -57,7 +57,7 @@
     <string name="add_items">add items</string>
     <string name="select_family">اختر العائلة</string>
     <string name="select_item">اختر الصنف</string>
-    <string name="quantity">الكمية:</string>
+    <string name="quantity">الكمية(بالقطعة):</string>
     <string name="no_confirmed_invoice">لم يتم عمل فاتورة لهذا العميل \n برجاء الاتصال بالعمليات</string>
     <string name="superVisorApp">صفحة المشرف الرئيسية</string>
     <string name="SalesManApp">صفحة المندوب الرئيسية</string>
@@ -83,4 +83,5 @@
     <string name="edited_cutomers">عملاء معدلين</string>
     <string name="change_printer">تغيير الطابعة</string>
     <string name="no_gard_invoice">لا توجد أصناف قديمة لهذا العميل \n برجاء المتابعة لإضافة أصناف جديدة</string>
+    <string name="refresh">تحديث</string>
 </resources>

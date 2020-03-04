@@ -12,9 +12,7 @@ import com.alyndroid.supervisorreceipt.R
 import com.alyndroid.supervisorreceipt.databinding.ActivityLoginBinding
 import com.alyndroid.supervisorreceipt.helpers.SharedPreference
 import com.alyndroid.supervisorreceipt.helpers.buildWifiDialog
-import com.alyndroid.supervisorreceipt.pojo.SalesMenResponse
 import com.alyndroid.supervisorreceipt.ui.filters.FiltersActivity
-import com.alyndroid.supervisorreceipt.ui.map.MapActivity
 import com.alyndroid.supervisorreceipt.ui.subordinates.SalesMenActivity
 import com.github.razir.progressbutton.attachTextChangeAnimator
 import com.github.razir.progressbutton.hideProgress
@@ -45,13 +43,14 @@ class LoginActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
             } else {
+                binding.loginButton.clearAnimation()
 
             }
         })
 
         viewModel.error.observe(this, Observer {
-            when(it){
-                1-> buildWifiDialog(this)
+            when (it) {
+                1 -> buildWifiDialog(this)
             }
         })
 
@@ -63,14 +62,14 @@ class LoginActivity : AppCompatActivity() {
                 SharedPreference(this).save("salesman_no", it.data.SalesmanNo)
                 SharedPreference(this).save("type", it.data.type)
 
-                if (it.data.type == "sm"){
+                if (it.data.type == "sm") {
                     val intent = Intent(this, FiltersActivity::class.java)
                     intent.putExtra("name", SharedPreference(this).getValueString("name"))
                     intent.putExtra("user_id", it.data.id.toString())
                     startActivity(intent)
                     finish()
                 } else if (it.data.type == "sv") {
-                    val intent = Intent(this,SalesMenActivity::class.java)
+                    val intent = Intent(this, SalesMenActivity::class.java)
                     intent.putExtra("name", SharedPreference(this).getValueString("name"))
                     intent.putExtra("user_id", it.data.id.toString())
                     startActivity(intent)

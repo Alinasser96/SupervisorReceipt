@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -192,16 +193,25 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
     override fun onNothingSelected() {}
 
     override fun onItemSelected(view: View?, position: Int, id: Long) {
+        val name = (view as TextView).text
+        var customerData:All? = null
+        for (customer in customers){
+            if (customer.customernamea==name){
+                customerData= customer
+                break
+            }
+        }
+
         if (SharedPreference(this).getValueString("type") == "sm") {
             val intent = Intent(this, GardActivity::class.java)
-            intent.putExtra("customerNo", customers[position].customerno)
-            intent.putExtra("customerName", customers[position].customernamea)
+            intent.putExtra("customerNo", customerData!!.customerno)
+            intent.putExtra("customerName", customerData.customernamea)
             startActivity(intent)
         } else {
             val intent = Intent(this, FinalReceiptActivity::class.java)
             if (chip.isChecked) {
-                intent.putExtra("customerNo", customers[position].customerno)
-                intent.putExtra("customerName", customers[position].customernamea)
+                intent.putExtra("customerNo", customerData!!.customerno)
+                intent.putExtra("customerName", customerData.customernamea)
             } else {
                 intent.putExtra("customerNo", nearbyCustomers[position].customerno)
                 intent.putExtra("customerName", nearbyCustomers[position].customernamea)

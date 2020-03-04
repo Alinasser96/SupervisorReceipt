@@ -51,10 +51,7 @@
                 android:textSize="@dimen/_14sdp"
                 android:visibility="gone" />
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/final_receipt_swipeToRefreshLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/families_recycler"
                     android:layout_width="match_parent"
@@ -62,7 +59,6 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="5"
                     tools:listitem="@layout/family_item_final" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </LinearLayout>
 
         <ProgressBar

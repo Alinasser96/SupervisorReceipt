@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_7sdp"
                         android:layout_marginStart="@dimen/_6sdp"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:fontFamily="@font/cairo_regular"
                         android:text="@string/quantity"
                         android:textSize="@dimen/_15sdp"

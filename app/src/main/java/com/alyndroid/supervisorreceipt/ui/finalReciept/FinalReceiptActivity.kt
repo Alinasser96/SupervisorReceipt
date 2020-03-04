@@ -62,7 +62,25 @@ class FinalReceiptActivity : BaseActivity() {
             addAction()
             true
         }
+        R.id.action_refresh -> {
+            refresh()
+            true
+        }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun refresh() {
+        when (SharedPreference(this).getValueString("type")) {
+            "sv" -> {
+                viewModel.getAllItems(intent.getStringExtra("customerNo")!!)
+            }
+            "sm" -> {
+                viewModel.getAllItems(
+                    SharedPreference(this).getValueString("salesman_no")!!
+                    , intent.getStringExtra("customerNo")!!
+                )
+            }
+        }
     }
 
     private fun printAction() {
@@ -131,20 +149,6 @@ class FinalReceiptActivity : BaseActivity() {
         }
 
 
-        binding.finalReceiptSwipeToRefreshLayout.setOnRefreshListener {
-            binding.finalReceiptSwipeToRefreshLayout.isRefreshing=false
-            when (SharedPreference(this).getValueString("type")) {
-                "sv" -> {
-                    viewModel.getAllItems(intent.getStringExtra("customerNo")!!)
-                }
-                "sm" -> {
-                    viewModel.getAllItems(
-                        SharedPreference(this).getValueString("salesman_no")!!
-                        , intent.getStringExtra("customerNo")!!
-                    )
-                }
-            }
-        }
         adapter = FamiliesAdapter(this, intent.getBooleanExtra("areShown", false),
             ItemsEditableAdapter.ItemClickListener {
                 val intent = Intent(this, EditItemActivity::class.java)
@@ -253,6 +257,7 @@ class FinalReceiptActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             1000 -> when (resultCode) {
                 RESULT_OK -> {
@@ -286,6 +291,8 @@ class FinalReceiptActivity : BaseActivity() {
                             , status = 1
                             , unit_factor = data.getStringExtra("factor")!!.toInt()
                             , default_unit = data.getStringExtra("unit")!!
+                            , small_unit = data.getStringExtra("unit")!!
+                            , large_unit = data.getStringExtra("large_unit")!!
                             , reason = data.getStringExtra("reason")!!
                             , itemcategory = data.getStringExtra("Family")!!
                         )

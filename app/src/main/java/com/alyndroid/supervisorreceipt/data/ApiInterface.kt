@@ -15,7 +15,7 @@ private val retrofit = Retrofit.Builder()
 
 interface ApiInterface {
     @POST("auth/login")
-    fun loginAsync(@Body map: HashMap<String, String>): Deferred<LoginResponse>
+    fun loginAsync(@Body map: HashMap<Any, Any>): Deferred<LoginResponse>
 
     @POST("gard-items")
     fun sendGardAsync(@Body map: HashMap<String, Any>): Deferred<LoginResponse>
