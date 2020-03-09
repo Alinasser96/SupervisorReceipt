@@ -80,7 +80,7 @@ class SplashActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("market://details?id=$appPackageName")
+                            Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
                         )
                     )
                 } catch (activityNotFoundException: android.content.ActivityNotFoundException) {

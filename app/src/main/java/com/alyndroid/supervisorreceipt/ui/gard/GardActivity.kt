@@ -101,8 +101,10 @@ class GardActivity : BaseActivity() {
         viewModel.loading.observe(this, Observer {
             if (it) {
                 progressBar.visibility = View.VISIBLE
+                gardDone_button.isEnabled = false
             } else {
                 progressBar.visibility = View.GONE
+                gardDone_button.isEnabled = true
             }
         })
     }
