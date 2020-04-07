@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -28,18 +29,20 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
     lateinit var familiesList: List<FamiliesData>
     lateinit var itemsList: MutableList<ItemByFamiliyData>
     lateinit var oldItemsList: List<ItemData>
+    lateinit var selectedItem: ItemByFamiliyData
     override fun onNothingSelected() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onItemSelected(view: View?, position: Int, id: Long) {
+        val name = (view as TextView).text
         when(view!!.parent.parent.parent.parent.parent.parent){
             families_spinner->{
-                viewModel.getItemByFamiliy(familiesList[position].BrandNo)
+                viewModel.getItemByFamiliy(familiesList.find { d-> d.BrandNameA == name }!!.BrandNo)
                 items_spinner.isVisible = true
-
             }
             items_spinner->{
+                selectedItem = itemsList.find { d->d.ItemNameA == name }!!
                 quantity_layout.isVisible = true
             }
         }
@@ -70,7 +73,7 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
         viewModel.itemResponse.observe(this, Observer {
             itemsList = it.data.toMutableList()
             for (i in it.data){
-                if (oldItemsList.any { d->d.itemname==i.ItemNameA }){
+                if (oldItemsList.any { d->d.itemno==i.ItemNo }){
                     itemsList.remove(i)
                 }
             }
@@ -92,13 +95,13 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
             if (reason_ET.text.toString().isNotEmpty()) {
             val intent = Intent(this, FinalReceiptActivity::class.java)
             intent.putExtra("Family", families_spinner.selectedItem.toString())
-            intent.putExtra("itemName", itemsList[items_spinner.selectedPosition].ItemNameA)
-            intent.putExtra("itemNo", itemsList[items_spinner.selectedPosition].ItemNo)
+            intent.putExtra("itemName", selectedItem.ItemNameA)
+            intent.putExtra("itemNo", selectedItem.ItemNo)
             intent.putExtra("count", editedItem_editText.text.toString())
             intent.putExtra("reason", reason_ET.text.toString())
-            intent.putExtra("factor", itemsList[items_spinner.selectedPosition].unit_factor)
-            intent.putExtra("unit", itemsList[items_spinner.selectedPosition].small_unit)
-            intent.putExtra("large_unit", itemsList[items_spinner.selectedPosition].large_unit)
+            intent.putExtra("factor", selectedItem.unit_factor)
+            intent.putExtra("unit", selectedItem.small_unit)
+            intent.putExtra("large_unit", selectedItem.large_unit)
             setResult(Activity.RESULT_OK, intent)
             finish()
             } else {

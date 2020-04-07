@@ -213,8 +213,9 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
                 intent.putExtra("customerNo", customerData!!.customerno)
                 intent.putExtra("customerName", customerData.customernamea)
             } else {
-                intent.putExtra("customerNo", nearbyCustomers[position].customerno)
-                intent.putExtra("customerName", nearbyCustomers[position].customernamea)
+                var nearbyCustomer = nearbyCustomers.find { d->d.customernamea==name}!!
+                intent.putExtra("customerNo", nearbyCustomer.customerno)
+                intent.putExtra("customerName", nearbyCustomer.customernamea)
             }
             intent.putExtra("areShown", chip.isChecked)
             startActivity(intent)
