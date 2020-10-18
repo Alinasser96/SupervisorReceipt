@@ -1,6 +1,5 @@
 package com.alyndroid.supervisorreceipt.ui.finalReciept
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -164,7 +163,7 @@ class FinalReceiptActivity : BaseActivity() {
         viewModel.response.observe(this, Observer { it1 ->
             val new = it1.new
             var it = it1.items.toMutableList()
-            if (new != null && new.isNotEmpty()){
+            if (new != null && new.isNotEmpty()) {
                 new.forEach {
                     it.isEditedItem = true
                 }
@@ -173,10 +172,13 @@ class FinalReceiptActivity : BaseActivity() {
 
 
 
-            add.isVisible = it1.type!="no_edit" && type == "sv" && !intent.getBooleanExtra("areShown", false)
+            add.isVisible =
+                it1.type != "no_edit" && type == "sv" && !intent.getBooleanExtra("areShown", false)
             if (SharedPreference(this).getValueString("type") == "sm") {
                 it = it1.items.filter { d -> d.item_type == "old" }.toMutableList()
-                it.addAll(intent.getSerializableExtra("newList") as Collection<ItemData>)
+                if (intent.getSerializableExtra("newList") != null) {
+                    it.addAll(intent.getSerializableExtra("newList") as Collection<ItemData>)
+                }
             }
 
             val list = it.toMutableList()
@@ -194,7 +196,7 @@ class FinalReceiptActivity : BaseActivity() {
                         i.quantity = (i.quantity.toDouble() * SharedPreference(this).getValueString(
                             SharedPref.gard_number
                         )!!.toDouble()).roundToInt()
-                                .toString()
+                            .toString()
                     } else {
                         i.quantity = (i.quantity.toDouble() - map[i.itemname] as Int).toString()
                     }
@@ -264,7 +266,7 @@ class FinalReceiptActivity : BaseActivity() {
                     Toast.makeText(this, data?.getStringExtra("id"), Toast.LENGTH_SHORT).show()
                     itemList.find { it.id == data?.getStringExtra("id")!!.toInt() }?.apply {
                         editedQuantity = data?.getStringExtra("edited")!!
-                        status = if (editedQuantity.toInt() > 0) {
+                        status = if (editedQuantity.toDouble() > 0) {
                             2
                         } else {
                             3
@@ -312,7 +314,21 @@ class FinalReceiptActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+
+        val alertDialogBuilder = MaterialDialog.Builder(this)
+        alertDialogBuilder.setMessage("هل أنت متأكد من تجاهل التغييرات؟")
+            .setCancelable(false)
+            .setPositiveButton(
+                "نعم"
+            ) { dialog, _ ->
+                super.onBackPressed()
+                finish()
+                dialog.cancel()
+            }
+        alertDialogBuilder.setNegativeButton(
+            "لا"
+        ) { dialog, _ -> dialog.cancel() }
+        val alert = alertDialogBuilder.build()
+        alert.show()
     }
 }

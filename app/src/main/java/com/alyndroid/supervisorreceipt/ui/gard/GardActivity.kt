@@ -46,6 +46,7 @@ class GardActivity : BaseActivity() {
 
             if (oldList.isEmpty()) {
                 empty_gard_msg_tv.isVisible = true
+                gardDone_button.isVisible = true
                 items_cardView.isVisible = false
             }
 
@@ -71,14 +72,30 @@ class GardActivity : BaseActivity() {
         })
 
         gardDone_button.setOnClickListener {
-            val gardMap = HashMap<String, Any>()
-            gardMap["invoice_id"] = itemsList[0].invoice_id
-            gardMap["salesman_id"] = SharedPreference(this).getValueString("salesman_no")!!
-            gardMap["customer_id"] = intent.getStringExtra("customerNo")!!
-            gardMap["item_id"] =
-                itemsList.filter { d -> d.item_type != "new" }.map { d -> d.itemno }
-            gardMap["gard_quantity"] = adapter.list.map { d -> d.itemCount }
-            confirmAction(gardMap)
+
+            if (empty_gard_msg_tv.isVisible) {
+                val intent2: Intent = if (newList.isEmpty())
+                    Intent(this, FinalReceiptActivity::class.java)
+                else
+                    Intent(this, NewItemsActivity::class.java)
+                intent2.putExtra("newList", newList as ArrayList)
+                val map = convertListToHashMap()
+                intent2.putExtra("adapter", map)
+                intent2.putExtra("customerName", intent.getStringExtra("customerName"))
+                intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
+                startActivity(intent2)
+            } else {
+                val gardMap = HashMap<String, Any>()
+                gardMap["invoice_id"] = itemsList[0].invoice_id
+                gardMap["salesman_id"] = SharedPreference(this).getValueString("salesman_no")!!
+                gardMap["customer_id"] = intent.getStringExtra("customerNo")!!
+                gardMap["item_id"] =
+                    itemsList.filter { d -> d.item_type != "new" }.map { d -> d.itemno }
+                gardMap["gard_quantity"] = adapter.list.map { d -> d.itemCount }
+                confirmAction(gardMap)
+            }
+
+
         }
 
         viewModel.sendGardResponse.observe(this, Observer {
@@ -119,31 +136,23 @@ class GardActivity : BaseActivity() {
 
 
     private fun confirmAction(gardMap: HashMap<String, Any>) {
-        if (empty_gard_msg_tv.isVisible) {
-            val intent2 = Intent(this, NewItemsActivity::class.java)
-            intent2.putExtra("newList", newList as ArrayList)
-            val map = convertListToHashMap()
-            intent2.putExtra("adapter", map)
-            intent2.putExtra("customerName", intent.getStringExtra("customerName"))
-            intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
-            startActivity(intent2)
-        } else {
-            val materialDialog = MaterialDialog.Builder(this)
-                .setTitle("انتهى الجرد؟")
-                .setMessage("هل أنت متأكد من تأكيد عملية الجرد؟")
-                .setCancelable(false)
-                .setPositiveButton(
-                    "نعم"
-                ) { dialog, _ ->
-                    viewModel.sendGard(gardMap)
-                    dialog.cancel()
-                }
-                .setNegativeButton(
-                    "لا"
-                ) { dialog, _ -> dialog.cancel() }
-                .build()
-            materialDialog.show()
-        }
+
+        val materialDialog = MaterialDialog.Builder(this)
+            .setTitle("انتهى الجرد؟")
+            .setMessage("هل أنت متأكد من تأكيد عملية الجرد؟")
+            .setCancelable(false)
+            .setPositiveButton(
+                "نعم"
+            ) { dialog, _ ->
+                viewModel.sendGard(gardMap)
+                dialog.cancel()
+            }
+            .setNegativeButton(
+                "لا"
+            ) { dialog, _ -> dialog.cancel() }
+            .build()
+        materialDialog.show()
+
     }
 
     private fun convertListToHashMap(): HashMap<String, Any> {

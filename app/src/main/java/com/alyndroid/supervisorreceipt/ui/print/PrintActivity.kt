@@ -107,7 +107,12 @@ class PrintActivity : AppCompatActivity() {
                 )
                 os.write(timp)
 
+                for (item in list){
+                    if (item.item_type != "old")
+                        item.itemname = "*" + item.itemname
+                }
                 for (item in list) {
+
                     val itemName = if (item.itemname.length > 28)
                         arabic864.Convert(
                             "\n" + rtlText(

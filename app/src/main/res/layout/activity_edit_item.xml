@@ -132,6 +132,13 @@
                 </LinearLayout>
 
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cairo_regular"
+                    android:text="@string/edit_reason_title"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold" />
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/issue_content_text_input_layout"
                     android:layout_width="match_parent"
@@ -139,12 +146,11 @@
                     android:background="@drawable/rounded_white"
                     android:padding="@dimen/_10sdp">
 
-                    <EditText
+                    <Spinner
                         android:id="@+id/reason_ET"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/issue_content"
-                        android:lines="3"
+
                         android:padding="@dimen/_10sdp" />
                 </com.google.android.material.textfield.TextInputLayout>
 

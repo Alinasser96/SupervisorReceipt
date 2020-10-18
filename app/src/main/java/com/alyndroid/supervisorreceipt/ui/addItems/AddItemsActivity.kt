@@ -92,7 +92,6 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
 
 
         btn_confirm_issue.setOnClickListener{
-            if (reason_ET.text.toString().isNotEmpty()) {
             val intent = Intent(this, FinalReceiptActivity::class.java)
             intent.putExtra("Family", families_spinner.selectedItem.toString())
             intent.putExtra("itemName", selectedItem.ItemNameA)
@@ -104,9 +103,6 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
             intent.putExtra("large_unit", selectedItem.large_unit)
             setResult(Activity.RESULT_OK, intent)
             finish()
-            } else {
-                addItemReason_textInputLayout.error = getString(R.string.you_must_enter_reason)
-            }
         }
     }
 }
