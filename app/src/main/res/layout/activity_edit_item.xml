@@ -77,8 +77,8 @@
                 <TextView
                     android:id="@+id/unit_textView"
                     android:layout_width="wrap_content"
-                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:fontFamily="@font/cairo_regular"
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="bold" />
@@ -131,14 +131,42 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/reason_switch_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/write_reason"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cairo_regular"
+                        android:text="@string/edit_reason_title"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addItemReason_textInputLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/cairo_regular"
-                    android:text="@string/edit_reason_title"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:background="@drawable/rounded_white"
+                    android:padding="@dimen/_10sdp"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/reason_ET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/issue_content"
+                        android:lines="4"
+                        android:padding="@dimen/_10sdp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/issue_content_text_input_layout"
                     android:layout_width="match_parent"
@@ -147,7 +175,7 @@
                     android:padding="@dimen/_10sdp">
 
                     <Spinner
-                        android:id="@+id/reason_ET"
+                        android:id="@+id/reason_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 

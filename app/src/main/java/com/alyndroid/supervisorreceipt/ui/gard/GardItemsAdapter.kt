@@ -30,6 +30,7 @@ class GardItemsAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: MatchesViewHolder, position: Int) {
+        holder.setIsRecyclable(false)
         val result = getItem(position)
         holder.itemNameTextView.text = result
         holder.productNoTextView.setText(list[position].itemCount.toString())

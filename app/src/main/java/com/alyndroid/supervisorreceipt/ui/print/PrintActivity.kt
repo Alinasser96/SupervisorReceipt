@@ -129,7 +129,10 @@ class PrintActivity : AppCompatActivity() {
                                 item.itemname
                             ), false
                         )
-                    os.write(itemName)
+                    if (item.quantity.toDouble()>0){
+                        os.write(itemName)
+                    }
+
                 }
 
                 os.write(("\n".repeat(2)).toByteArray())

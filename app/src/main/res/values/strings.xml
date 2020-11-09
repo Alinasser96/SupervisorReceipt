@@ -84,4 +84,6 @@
     <string name="change_printer">تغيير الطابعة</string>
     <string name="no_gard_invoice">لا توجد أصناف قديمة لهذا العميل \n برجاء المتابعة لإضافة أصناف جديدة</string>
     <string name="refresh">تحديث</string>
+    <string name="write_reason">كتابة السبب</string>
+    <string name="choose_reason">اختيار سبب</string>
 </resources>
