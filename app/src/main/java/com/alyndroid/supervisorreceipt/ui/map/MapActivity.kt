@@ -202,7 +202,8 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             }
         }
 
-        if (SharedPreference(this).getValueString("type") == "sm") {
+        if (SharedPreference(this).getValueString("type") == "sm"
+            || SharedPreference(this).getValueString("type") == "co") {
             val intent = Intent(this, GardActivity::class.java)
             intent.putExtra("customerNo", customerData!!.customerno)
             intent.putExtra("customerName", customerData.customernamea)
@@ -320,7 +321,8 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             it!!.addMarker(markerOptions).showInfoWindow()
             it.setOnInfoWindowClickListener {
                 if (it.title != "your location") {
-                    if (SharedPreference(this).getValueString("type") == "sm") {
+                    if (SharedPreference(this).getValueString("type") == "sm"
+                        || SharedPreference(this).getValueString("type") == "co") {
                         val intent = Intent(this, GardActivity::class.java)
                         intent.putExtra("customerNo", it.snippet)
                         intent.putExtra("customerName", it.title)

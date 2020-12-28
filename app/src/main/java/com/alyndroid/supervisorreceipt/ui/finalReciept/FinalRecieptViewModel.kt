@@ -1,22 +1,14 @@
 package com.alyndroid.supervisorreceipt.ui.finalReciept
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alyndroid.supervisorreceipt.data.ApiInterface
-import com.alyndroid.supervisorreceipt.helpers.ErrorMsg
 import com.alyndroid.supervisorreceipt.helpers.handleError
-import com.alyndroid.supervisorreceipt.pojo.FinalRecieptData
-import com.alyndroid.supervisorreceipt.pojo.ItemData
-import com.alyndroid.supervisorreceipt.pojo.LoginResponse
-import com.alyndroid.supervisorreceipt.pojo.SendInvoiceResponce
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.net.UnknownHostException
+import com.alyndroid.supervisorreceipt.pojo.*
+import kotlinx.coroutines.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -24,6 +16,12 @@ class FinalRecieptViewModel : ViewModel() {
     private val _response = MutableLiveData<FinalRecieptData>()
     val response: LiveData<FinalRecieptData>
         get() = _response
+
+
+    private val _coItemsResponse = MutableLiveData<CoordinatorItemsData>()
+    val coItemsResponse: LiveData<CoordinatorItemsData>
+        get() = _coItemsResponse
+
 
     private val _sendInvoiceResponse = MutableLiveData<SendInvoiceResponce>()
     val sendInvoiceResponse: LiveData<SendInvoiceResponce>
@@ -76,14 +74,32 @@ class FinalRecieptViewModel : ViewModel() {
         }
     }
 
-    fun getAllItems(salesManCode: String, customerCode: String) {
+
+    fun getAllCoItems(customerCode: String) {
         coroutineScope.launch {
             _loading.value = true
             val loginDeferred =
-                ApiInterface.SNBApi.retrofitService.getAllItemsAsync(salesManCode, customerCode)
+                    ApiInterface.SNBApi.retrofitService.getAllCoItemsAsync(customerCode)
             try {
                 val stringResult = loginDeferred.await()
-                _fromSV.value = (stringResult.data.type=="sv")
+                _empty.value = stringResult.data.items.isEmpty()
+                _coItemsResponse.value = stringResult.data
+                _loading.value = false
+            } catch (e: Exception) {
+                _error.value = handleError(e)
+                _loading.value = false
+            }
+        }
+    }
+    fun getAllItems( salesManCode: String, customerCode: String) {
+        coroutineScope.launch {
+            _loading.value = true
+            val loginDeferred=
+                    ApiInterface.SNBApi.retrofitService.getAllItemsAsync(salesManCode, customerCode)
+
+            try {
+                val stringResult = loginDeferred!!.await()
+                _fromSV.value = (stringResult.data.type == "sv")
                 _families.value = stringResult.data.items.map { it.itemcategory }.distinct()
                 _empty.value = stringResult.data.items.isEmpty()
                 _response.value = stringResult.data
@@ -113,10 +129,24 @@ class FinalRecieptViewModel : ViewModel() {
         }
     }
 
-    fun sendSupervisorInvoice(list: MutableList<ItemData>, supervisorNo : String) {
-        for (i in list){
-            if (i.default_unit == i.large_unit){
-                i.editedQuantity = (i.editedQuantity.toDouble()*i.unit_factor!!).toString()
+    fun sendCoGard(requestBody: RequestBody) {
+        coroutineScope.launch {
+            _loading.value = true
+            val loginDeferred = ApiInterface.SNBApi.retrofitService.sendCoGardAsync(requestBody)
+            try {
+                val stringResult = loginDeferred.await()
+                _sendGardResponse.value = stringResult
+            } catch (e: Exception) {
+                _error.value = handleError(e)
+                _loading.value = false
+            }
+        }
+    }
+
+    fun sendSupervisorInvoice(list: MutableList<ItemData>, supervisorNo: String) {
+        for (i in list) {
+            if (i.default_unit == i.large_unit) {
+                i.editedQuantity = (i.editedQuantity.toDouble() * i.unit_factor!!).toString()
             }
         }
         val current = LocalDateTime.now()
@@ -145,6 +175,7 @@ class FinalRecieptViewModel : ViewModel() {
             }
         }
     }
+
     fun sendSalesmanInvoice(list: MutableList<ItemData>, salesmanNo: String, customerNo: String) {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
@@ -155,7 +186,7 @@ class FinalRecieptViewModel : ViewModel() {
         map["date"] = formatted
         map["item_id"] = list.map { d -> d.itemno }
         map["quantity"] = list.map { d -> d.quantity }
-        map["type"] = list.map { d -> d.item_type}
+        map["type"] = list.map { d -> d.item_type }
         coroutineScope.launch {
             _loading.value = true
             val loginDeferred = ApiInterface.SNBApi.retrofitService.sendSalesmanInvoiceAsync(map)
@@ -170,5 +201,5 @@ class FinalRecieptViewModel : ViewModel() {
         }
     }
 
-    
+
 }

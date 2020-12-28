@@ -1,102 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.gard.GardActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
+    </data>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/items_cardView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="12dp"
-        android:visibility="gone"
-        android:layout_alignParentTop="true"
-        app:layout_constraintVertical_bias="0.00999999"
-        tools:visibility="visible">
+        android:layout_height="match_parent"
+        tools:context=".ui.gard.GardActivity">
 
-        <RelativeLayout
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_stroke">
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:layout_centerInParent="true"/>
-            <LinearLayout
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:orientation="horizontal"
-                android:padding="@dimen/_5sdp">
+            android:layout_alignParentTop="true">
 
-                <TextView
-                    android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/items_cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="gone"
+                    app:layout_constraintVertical_bias="0.00999999"
+                    tools:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_stroke">
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:visibility="visible" />
+
+                        <LinearLayout
+                            android:id="@+id/header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorPrimary"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/_5sdp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/cairo_bold"
+                                android:gravity="center"
+                                android:text="@string/gard" />
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/GardItems_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/header"
+                            android:layout_margin="@dimen/_5sdp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="5"
+                            tools:listitem="@layout/gard_item" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/co_btns_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn1"
+                        android:text="image 1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/btn2"
+                        android:text="image 2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/btn3"
+                        android:text="image 3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/co_images_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/img1"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_120sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/img2"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_120sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/img3"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_120sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/gardDone_button"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/cairo_bold"
-                    android:gravity="center"
-                    android:text="@string/gard" />
-
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/done"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
             </LinearLayout>
+        </ScrollView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/GardItems_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/header"
-                android:layout_margin="@dimen/_5sdp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="5"
-                tools:listitem="@layout/gard_item" />
+        <androidx.appcompat.widget.AppCompatTextView
 
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+            android:id="@+id/empty_msg_tv"
+            style="@style/ActionButton.NextStepMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/no_confirmed_invoice"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/gardDone_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/done"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
-    <androidx.appcompat.widget.AppCompatTextView
-
-        android:id="@+id/empty_msg_tv"
-        style="@style/ActionButton.NextStepMode"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:gravity="center"
-        android:padding="@dimen/_5sdp"
-        android:layout_height="wrap_content"
-        android:text="@string/no_confirmed_invoice"
-        android:layout_centerInParent="true"/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/empty_gard_msg_tv"
-        style="@style/ActionButton.NextStepMode"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:padding="@dimen/_5sdp"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:text="@string/no_gard_invoice"
-        android:layout_centerInParent="true" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/empty_gard_msg_tv"
+            style="@style/ActionButton.NextStepMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/no_gard_invoice"
+            android:visibility="gone" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

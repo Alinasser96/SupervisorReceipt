@@ -57,12 +57,13 @@ class LoginActivity : AppCompatActivity() {
         viewModel.response.observe(this, Observer {
             if (it.status) {
                 SharedPreference(this).save("name", it.data.name)
+                SharedPreference(this).save("phone", binding.codeEditText.text.toString())
                 SharedPreference(this).save("password", binding.passwordEditText.text.toString())
                 SharedPreference(this).save("user_id", it.data.id)
                 SharedPreference(this).save("salesman_no", it.data.SalesmanNo)
                 SharedPreference(this).save("type", it.data.type)
 
-                if (it.data.type == "sm") {
+                if (it.data.type == "sm" || it.data.type == "co") {
                     val intent = Intent(this, FiltersActivity::class.java)
                     intent.putExtra("name", SharedPreference(this).getValueString("name"))
                     intent.putExtra("user_id", it.data.id.toString())

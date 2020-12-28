@@ -33,11 +33,11 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.response.observe(this, Observer {
             if (it.status) {
-                if (it.data.type == "sm") {
+                if (it.data.type == "sm" || it.data.type == "co") {
                     val intent = Intent(this, FiltersActivity::class.java)
                     startActivity(intent)
                     finish()
-                } else if (it.data.type == "sv") {
+                } else if (it.data.type == "sv" ) {
                     val intent = Intent(this, SalesMenActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -95,9 +95,9 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        if (SharedPreference(this).getValueString("salesman_no") != null) {
+        if (SharedPreference(this).getValueString("phone") != null) {
             viewModel.login(
-                SharedPreference(this).getValueString("salesman_no")!!,
+                SharedPreference(this).getValueString("phone")!!,
                 SharedPreference(this).getValueString("password")!!
             )
         } else {

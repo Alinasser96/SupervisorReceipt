@@ -1,7 +1,5 @@
 package com.alyndroid.supervisorreceipt.ui.filters
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -19,11 +17,9 @@ import com.alyndroid.supervisorreceipt.helpers.SharedPreference
 import com.alyndroid.supervisorreceipt.helpers.logoutAction
 import com.alyndroid.supervisorreceipt.pojo.CustomersResponse
 import com.alyndroid.supervisorreceipt.ui.base.BaseActivity
-import com.alyndroid.supervisorreceipt.ui.login.LoginActivity
 import com.alyndroid.supervisorreceipt.ui.map.MapActivity
 import com.alyndroid.supervisorreceipt.ui.subordinates.SalesMenActivity
 import com.google.android.material.navigation.NavigationView
-import com.shreyaspatil.MaterialDialog.MaterialDialog
 import kotlinx.android.synthetic.main.app_bar_activity_dashboard.*
 
 class FiltersActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +48,14 @@ class FiltersActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
                 salesman_name_textView.visibility = View.VISIBLE
                 salesman_name_textView.text =
                     "اسم المندوب: " + intent.getStringExtra("salesManName")!!
+            }
+            "co" -> {
+                viewModel.getAllCoCustomers(SharedPreference(this).getValueInt("user_id")!!)
+                title = getString(R.string.SalesManApp)
+                changeSalesMan_Button.visibility = View.GONE
+                salesman_name_textView.visibility = View.VISIBLE
+                salesman_name_textView.text =
+                    "مرحبا بك: " + SharedPreference(this).getValueString("name")!!
             }
             "sm" -> {
                 viewModel.getAllCustomers(SharedPreference(this).getValueString("salesman_no")!!)
@@ -146,8 +150,6 @@ class FiltersActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedL
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
-
 
 
 }

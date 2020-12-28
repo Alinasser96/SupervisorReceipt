@@ -67,6 +67,7 @@ class GardItemsAdapter(val context: Context) :
 
     fun setdata(list: MutableList<String>?){
         this.list = list!!.map { d->GardModel(d, 0) }.toMutableList()
+        notifyDataSetChanged()
     }
 
     class MatchesViewHolder(view: View) :

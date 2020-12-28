@@ -3,14 +3,17 @@ package com.alyndroid.supervisorreceipt.data
 import com.alyndroid.supervisorreceipt.pojo.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
+import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
+
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
-    .baseUrl("http://snb.waritex.org/api/")
+    .baseUrl("http://snb.waritexprojects.com/api/")
     .build()
 
 interface ApiInterface {
@@ -20,6 +23,11 @@ interface ApiInterface {
     @POST("gard-items")
     fun sendGardAsync(@Body map: HashMap<String, Any>): Deferred<LoginResponse>
 
+    @POST("coor-gard-items")
+    fun sendCoGardAsync(
+        @Body file: RequestBody
+    ): Deferred<LoginResponse>
+
     @POST("supervisor/invoice")
     fun sendSupervisorInvoiceAsync(@Body map: HashMap<String, Any>): Deferred<SendInvoiceResponce>
 
@@ -28,6 +36,12 @@ interface ApiInterface {
 
     @GET("load/customers/{userCode}")
     fun getAllCustomersAsync(@Path("userCode") userCode: String): Deferred<CustomersResponse>
+
+    @GET("coor-customers/{userCode}")
+    fun getAllCoCustomersAsync(@Path("userCode") userCode: Int): Deferred<CustomersResponse>
+
+    @GET("load-coordinator-customer-items/{customerNo}")
+    fun getAllCoItemsAsync(@Path("customerNo") customerNo: String): Deferred<CoordinatorItemsResponse>
 
     @GET("load/suggested/items/{customerNo}")
     fun getAllItemsAsync(@Path("customerNo") customerNo: String): Deferred<FinalRecieptResponse>

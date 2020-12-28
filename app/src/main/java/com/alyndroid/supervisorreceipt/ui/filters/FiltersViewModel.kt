@@ -40,4 +40,18 @@ class FiltersViewModel: ViewModel() {
             }
         }
     }
+
+    fun getAllCoCustomers(code: Int) {
+        coroutineScope.launch {
+            _loading.value = true
+            val loginDeferred = ApiInterface.SNBApi.retrofitService.getAllCoCustomersAsync(code)
+            try {
+                val stringResult = loginDeferred.await()
+                _allResponse.value = stringResult
+                _loading.value = false
+            } catch (e: Exception) {
+                _loading.value = false
+            }
+        }
+    }
 }

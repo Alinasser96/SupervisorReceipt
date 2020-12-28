@@ -34,7 +34,7 @@ class LoginViewModel: ViewModel() {
 
     fun login(code: String, password: String) {
         val map = HashMap<Any, Any>()
-        map["salesmanno"] = code
+        map["phone"] = code
         map["password"] = password
         coroutineScope.launch {
             _loading.value = true
