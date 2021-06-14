@@ -39,8 +39,8 @@ class FinalRecieptViewModel : ViewModel() {
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _sendGardResponse = MutableLiveData<LoginResponse>()
-    val sendGardResponse: LiveData<LoginResponse>
+    private val _sendGardResponse = MutableLiveData<GardResponse>()
+    val sendGardResponse: LiveData<GardResponse>
         get() = _sendGardResponse
 
     private val _empty = MutableLiveData<Boolean>()
@@ -146,7 +146,7 @@ class FinalRecieptViewModel : ViewModel() {
     fun sendSupervisorInvoice(list: MutableList<ItemData>, supervisorNo: String) {
         for (i in list) {
             if (i.default_unit == i.large_unit) {
-                i.editedQuantity = (i.editedQuantity.toDouble() * i.unit_factor!!).toString()
+        i.editedQuantity = (i.editedQuantity!!.toDouble() * i.unit_factor!!).toString()
             }
         }
         val current = LocalDateTime.now()
@@ -176,7 +176,7 @@ class FinalRecieptViewModel : ViewModel() {
         }
     }
 
-    fun sendSalesmanInvoice(list: MutableList<ItemData>, salesmanNo: String, customerNo: String) {
+    fun sendSalesmanInvoice(list: MutableList<ItemData>, salesmanNo: String, customerNo: String, gardID: Int) {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         val formatted = current.format(formatter)
@@ -187,6 +187,9 @@ class FinalRecieptViewModel : ViewModel() {
         map["item_id"] = list.map { d -> d.itemno }
         map["quantity"] = list.map { d -> d.quantity }
         map["type"] = list.map { d -> d.item_type }
+        map["supervisor_invoice"] = list[0].supervisor_invoice!!
+        map["gard_id"] = gardID
+
         coroutineScope.launch {
             _loading.value = true
             val loginDeferred = ApiInterface.SNBApi.retrofitService.sendSalesmanInvoiceAsync(map)

@@ -117,7 +117,7 @@ class PrintActivity : AppCompatActivity() {
                         arabic864.Convert(
                             "\n" + rtlText(
                                 item.default_unit,
-                                item.quantity,
+                                item.quantity!!,
                                 item.itemname.substring(0, 28)
                             ), false
                         )
@@ -125,11 +125,11 @@ class PrintActivity : AppCompatActivity() {
                         arabic864.Convert(
                             "\n" + rtlText(
                                 item.default_unit,
-                                item.quantity,
+                                item.quantity!!,
                                 item.itemname
                             ), false
                         )
-                    if (item.quantity.toDouble()>0){
+                    if (item.quantity!!.toDouble()>0){
                         os.write(itemName)
                     }
 

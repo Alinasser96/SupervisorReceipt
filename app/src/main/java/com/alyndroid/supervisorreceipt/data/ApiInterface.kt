@@ -21,12 +21,12 @@ interface ApiInterface {
     fun loginAsync(@Body map: HashMap<Any, Any>): Deferred<LoginResponse>
 
     @POST("gard-items")
-    fun sendGardAsync(@Body map: HashMap<String, Any>): Deferred<LoginResponse>
+    fun sendGardAsync(@Body map: HashMap<String, Any>): Deferred<GardResponse>
 
     @POST("coor-gard-items")
     fun sendCoGardAsync(
         @Body file: RequestBody
-    ): Deferred<LoginResponse>
+    ): Deferred<GardResponse>
 
     @POST("supervisor/invoice")
     fun sendSupervisorInvoiceAsync(@Body map: HashMap<String, Any>): Deferred<SendInvoiceResponce>

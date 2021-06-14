@@ -13,6 +13,7 @@
         tools:context=".ui.gard.GardActivity">
 
 
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,14 +40,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/rounded_stroke">
-
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:visibility="visible" />
 
                         <LinearLayout
                             android:id="@+id/header"
@@ -85,6 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <Button
@@ -177,6 +171,12 @@
             android:text="@string/no_gard_invoice"
             android:visibility="gone" />
 
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
     </RelativeLayout>
 </layout>

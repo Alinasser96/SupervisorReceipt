@@ -40,7 +40,6 @@ import kotlinx.android.synthetic.main.activity_map.*
 class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
     CompoundButton.OnCheckedChangeListener {
 
-
     private val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     var currentLatLong: LatLng? = null
@@ -194,16 +193,17 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
 
     override fun onItemSelected(view: View?, position: Int, id: Long) {
         val name = (view as TextView).text
-        var customerData:All? = null
-        for (customer in customers){
-            if (customer.customernamea==name){
-                customerData= customer
+        var customerData: All? = null
+        for (customer in customers) {
+            if (customer.customernamea == name) {
+                customerData = customer
                 break
             }
         }
 
         if (SharedPreference(this).getValueString("type") == "sm"
-            || SharedPreference(this).getValueString("type") == "co") {
+            || SharedPreference(this).getValueString("type") == "co"
+        ) {
             val intent = Intent(this, GardActivity::class.java)
             intent.putExtra("customerNo", customerData!!.customerno)
             intent.putExtra("customerName", customerData.customernamea)
@@ -214,7 +214,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
                 intent.putExtra("customerNo", customerData!!.customerno)
                 intent.putExtra("customerName", customerData.customernamea)
             } else {
-                var nearbyCustomer = nearbyCustomers.find { d->d.customernamea==name}!!
+                var nearbyCustomer = nearbyCustomers.find { d -> d.customernamea == name }!!
                 intent.putExtra("customerNo", nearbyCustomer.customerno)
                 intent.putExtra("customerName", nearbyCustomer.customernamea)
             }
@@ -226,14 +226,15 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
     private fun setupMap(location: Location, showAll: Boolean) {
         if (googleMap != null)
             googleMap!!.clear()
-        if (customers.isEmpty())
-        { Toast.makeText(this, "لا يوجد عملاء حاليين", Toast.LENGTH_LONG).show()
+        if (customers.isEmpty()) {
+            Toast.makeText(this, "لا يوجد عملاء حاليين", Toast.LENGTH_LONG).show()
             val adapter = ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item, emptyList()
             )
             names_spinner.setAdapter(adapter)
-            return}
+            return
+        }
         nearbyCustomers.clear()
         currentLatLong = LatLng(location.latitude, location.longitude)
         currentLocation = Location("")
@@ -246,7 +247,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
         val distances = mutableListOf<Float>()
         val builder = LatLngBounds.Builder()
         for (customer in customers) {
-            if (customer.latitude != null) {
+            if (customer.latitude != "NULL") {
                 val location = Location("")
                 location.latitude = customer.latitude.toDouble()
                 location.longitude = customer.longitude!!.toDouble()
@@ -322,11 +323,35 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             it.setOnInfoWindowClickListener {
                 if (it.title != "your location") {
                     if (SharedPreference(this).getValueString("type") == "sm"
-                        || SharedPreference(this).getValueString("type") == "co") {
-                        val intent = Intent(this, GardActivity::class.java)
+
+                    ) {
+                        val map = HashMap<String, Any>()
+                        val intent: Intent = if (showAll) {
+                            Intent(this, FinalReceiptActivity::class.java)
+                        } else {
+                            Intent(this, GardActivity::class.java)
+                        }
+
                         intent.putExtra("customerNo", it.snippet)
                         intent.putExtra("customerName", it.title)
+                        intent.putExtra("areShown", showAll)
+                        intent.putExtra("adapter", map)
+                        intent.putExtra("gardID", 0)
                         startActivity(intent)
+                    } else if (SharedPreference(this).getValueString("type") == "co") {
+                        val map = HashMap<String, Any>()
+                        if (showAll) {
+                            Toast.makeText(this, "لا يمكن عمل جرد لعميل بعيد", Toast.LENGTH_LONG).show()
+                        } else {
+                            val intent: Intent =
+                                Intent(this, GardActivity::class.java)
+                            intent.putExtra("customerNo", it.snippet)
+                            intent.putExtra("customerName", it.title)
+                            intent.putExtra("areShown", showAll)
+                            intent.putExtra("adapter", map)
+                            intent.putExtra("gardID", 0)
+                            startActivity(intent)
+                        }
                     } else {
                         val intent = Intent(this, FinalReceiptActivity::class.java)
                         intent.putExtra("customerNo", it.snippet)
@@ -410,7 +435,9 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, OnItemSelectedListener,
             if (usedCustomers.new.contains(i.customerno)) {
                 newCustomers.add(i)
             }
-            if (usedCustomers.new_item.map { c -> c.customerno }.distinct().contains(i.customerno)) {
+            if (usedCustomers.new_item.map { c -> c.customerno }.distinct()
+                    .contains(i.customerno)
+            ) {
                 editedCustomers.add(i)
             }
         }

@@ -21,7 +21,7 @@ class GardItemsAdapter(val context: Context) :
     public var list:MutableList<GardModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchesViewHolder {
         return MatchesViewHolder(
-            LayoutInflater.from(context).inflate(
+                LayoutInflater.from(context).inflate(
                 R.layout.gard_item,
                 parent,
                 false

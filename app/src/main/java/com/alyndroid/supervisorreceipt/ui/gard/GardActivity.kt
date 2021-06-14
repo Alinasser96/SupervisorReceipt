@@ -100,6 +100,8 @@ class GardActivity : BaseActivity() {
                 empty_gard_msg_tv.isVisible = true
                 gardDone_button.isVisible = true
                 items_cardView.isVisible = false
+                binding.coBtnsLayout.isVisible = false
+                binding.coImagesLayout.isVisible = false
             }
 
             newList = it.items.filter { d -> d.item_type == "new" }.toMutableList()
@@ -117,6 +119,10 @@ class GardActivity : BaseActivity() {
             items_cardView.isVisible = !it
             gardDone_button.isVisible = !it
             empty_msg_tv.isVisible = it
+            if (SharedPreference(this).getValueString("type") == "co") {
+                binding.coBtnsLayout.isVisible = !it
+                binding.coImagesLayout.isVisible = !it
+            }
         })
 
 
@@ -130,12 +136,12 @@ class GardActivity : BaseActivity() {
         })
 
         gardDone_button.setOnClickListener {
-
-            if (currentPhotoPath1==null || currentPhotoPath2==null||currentPhotoPath3==null){
-                Toast.makeText(this, "يجب ادخال 3 صور", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            gardDone_button.isEnabled = false
             if (SharedPreference(this).getValueString("type") == "co") {
+                if (currentPhotoPath1 == null || currentPhotoPath2 == null || currentPhotoPath3 == null) {
+                    Toast.makeText(this, "يجب ادخال 3 صور", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
                 val formatted = current.format(formatter)
@@ -143,7 +149,7 @@ class GardActivity : BaseActivity() {
                 val builder =
                     MultipartBody.Builder().setType(MultipartBody.FORM)
 
-                builder.addFormDataPart("coordinator_id", "59")
+                builder.addFormDataPart("coordinator_id", SharedPreference(this).getValueInt("user_id").toString())
                     .addFormDataPart("customer_id", intent.getStringExtra("customerNo")!!)
                     .addFormDataPart("date", formatted)
 
@@ -209,12 +215,16 @@ class GardActivity : BaseActivity() {
                     intent2.putExtra("adapter", map)
                     intent2.putExtra("customerName", intent.getStringExtra("customerName"))
                     intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
+                    intent2.putExtra("areShown", intent.getBooleanExtra("areShown", false))
+                    intent2.putExtra("gardID", 0)
+
                     startActivity(intent2)
                 } else {
                     val gardMap = HashMap<String, Any>()
                     gardMap["invoice_id"] = itemsList[0].invoice_id
                     gardMap["salesman_id"] = SharedPreference(this).getValueString("salesman_no")!!
                     gardMap["customer_id"] = intent.getStringExtra("customerNo")!!
+                    gardMap["supervisor_invoice"] = itemsList[0].supervisor_invoice!!
                     gardMap["item_id"] =
                         itemsList.filter { d -> d.item_type != "new" }.map { d -> d.itemno }
                     gardMap["gard_quantity"] = adapter.list.map { d -> d.itemCount }
@@ -231,7 +241,6 @@ class GardActivity : BaseActivity() {
                     lateinit var intent2: Intent
                     if (newList.isEmpty()) {
                         intent2 = Intent(this, FinalReceiptActivity::class.java)
-
                     } else {
                         intent2 = Intent(this, NewItemsActivity::class.java)
                         intent2.putExtra("newList", newList as ArrayList)
@@ -240,10 +249,12 @@ class GardActivity : BaseActivity() {
                     intent2.putExtra("adapter", map)
                     intent2.putExtra("customerName", intent.getStringExtra("customerName"))
                     intent2.putExtra("customerNo", intent.getStringExtra("customerNo"))
+                    intent2.putExtra("areShown", intent.getBooleanExtra("areShown", false))
+                    intent2.putExtra("gardID", it.data.id)
                     startActivity(intent2)
                 }
             } else {
-                Toast.makeText(this, "done", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "تم إرسال الجرد بنجاح", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, FiltersActivity::class.java))
             }
         })

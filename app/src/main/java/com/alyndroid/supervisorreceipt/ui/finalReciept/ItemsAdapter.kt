@@ -35,14 +35,14 @@ class ItemsAdapter(val context: Context) :
         holder.productNameTextView.setOnClickListener {
             if (result.default_unit == result.small_unit) {
                 result.default_unit = result.large_unit
-                result.quantity = (result.quantity.toDouble() / result.unit_factor!!).toString()
+                result.quantity = (result.quantity!!.toDouble() / result.unit_factor!!).toString()
             } else {
                 result.default_unit = result.small_unit
-                result.quantity = (result.quantity.toDouble() * result.unit_factor!!).toString()
+                result.quantity = (result.quantity!!.toDouble() * result.unit_factor!!).toString()
             }
             notifyDataSetChanged()
         }
-        if (result.quantity.toDouble().toInt()>=0) {
+        if (result.quantity!!.toDouble().toInt()>=0) {
             holder.productCountTextView.text = result.quantity
         }else{
             holder.productCountTextView.text = "0"

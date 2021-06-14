@@ -42,7 +42,7 @@ class FinalReceiptActivity : BaseActivity() {
         val confirm = menu.findItem(R.id.confirm_invoice)
         add = menu.findItem(R.id.action_add)
         type = SharedPreference(this).getValueString("type")!!
-        print.isVisible = type == "sm"
+        print.isVisible = type == "sm" && !intent.getBooleanExtra("areShown", false)
         confirm.isVisible = type == "sv" && !intent.getBooleanExtra("areShown", false)
         add.isVisible = type == "sv" && !intent.getBooleanExtra("areShown", false)
         return true
@@ -93,6 +93,7 @@ class FinalReceiptActivity : BaseActivity() {
                     itemList
                     , SharedPreference(this).getValueString("salesman_no")!!
                     , intent.getStringExtra("customerNo")!!
+                    , intent.getIntExtra("gardID",0)
                 )
                 dialog.cancel()
             }
@@ -162,7 +163,7 @@ class FinalReceiptActivity : BaseActivity() {
 
         viewModel.response.observe(this, Observer { it1 ->
             val new = it1.new
-            var it = it1.items.toMutableList()
+            var it = it1.items.filter { i -> i.quantity != null }.toMutableList()
             if (new != null && new.isNotEmpty()) {
                 new.forEach {
                     it.isEditedItem = true
@@ -175,7 +176,8 @@ class FinalReceiptActivity : BaseActivity() {
             add.isVisible =
                 it1.type != "no_edit" && type == "sv" && !intent.getBooleanExtra("areShown", false)
             if (SharedPreference(this).getValueString("type") == "sm") {
-                it = it1.items.filter { d -> d.item_type == "old" }.toMutableList()
+                it = it1.items.filter { d -> d.item_type == "old" }
+                    .filter { i -> i.quantity != null }.toMutableList()
                 if (intent.getSerializableExtra("newList") != null) {
                     it.addAll(intent.getSerializableExtra("newList") as Collection<ItemData>)
                 }
@@ -193,12 +195,13 @@ class FinalReceiptActivity : BaseActivity() {
             if (SharedPreference(this).getValueString("type") == "sm") {
                 for (i in it.filter { d -> d.item_type == "old" }) {
                     if (map[i.itemname] as Int == 0) {
-                        i.quantity = (i.quantity.toDouble() * SharedPreference(this).getValueString(
-                            SharedPref.gard_number
-                        )!!.toDouble()).roundToInt()
-                            .toString()
+                        i.quantity =
+                            (i.quantity!!.toDouble() * SharedPreference(this).getValueString(
+                                SharedPref.gard_number
+                            )!!.toDouble()).roundToInt()
+                                .toString()
                     } else {
-                        i.quantity = (i.quantity.toDouble() - map[i.itemname] as Int).toString()
+                        i.quantity = (i.quantity!!.toDouble() - map[i.itemname] as Int).toString()
                     }
                 }
             }
@@ -266,7 +269,7 @@ class FinalReceiptActivity : BaseActivity() {
                     Toast.makeText(this, data?.getStringExtra("id"), Toast.LENGTH_SHORT).show()
                     itemList.find { it.id == data?.getStringExtra("id")!!.toInt() }?.apply {
                         editedQuantity = data?.getStringExtra("edited")!!
-                        status = if (editedQuantity.toDouble() > 0) {
+                        status = if (editedQuantity!!.toDouble() > 0) {
                             2
                         } else {
                             3

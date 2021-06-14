@@ -74,6 +74,7 @@ class SharedPreference(val context: Context) {
     fun logout(){
         val editor: SharedPreferences.Editor = sharedPref.edit()
         editor.remove("name")
+        editor.remove("phone")
         editor.remove("password")
         editor.remove("user_id")
         editor.remove("salesman_no")

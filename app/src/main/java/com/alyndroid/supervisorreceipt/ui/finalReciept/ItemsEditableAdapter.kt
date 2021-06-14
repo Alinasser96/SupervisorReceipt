@@ -45,10 +45,10 @@ class ItemsEditableAdapter(
         holder.productNameTextView.setOnClickListener {
             if (result.default_unit == result.small_unit) {
                 result.default_unit = result.large_unit
-                result.editedQuantity = (result.editedQuantity.toDouble() / result.unit_factor).toString()
+                result.editedQuantity = (result.editedQuantity!!.toDouble() / result.unit_factor).toString()
             } else {
                 result.default_unit = result.small_unit
-                result.editedQuantity = (result.editedQuantity.toDouble() * result.unit_factor).toString()
+                result.editedQuantity = (result.editedQuantity!!.toDouble() * result.unit_factor).toString()
             }
             notifyDataSetChanged()
         }
@@ -58,7 +58,7 @@ class ItemsEditableAdapter(
             holder.productNameTextView.setTextColor(context.getColor(R.color.white))
             holder.wehdaTextView.setTextColor(context.getColor(R.color.white))
         }
-        if (result.editedQuantity.toDouble().toInt() >= 0) {
+        if (result.editedQuantity!!.toDouble().toInt() >= 0) {
             holder.productCountTextView.text = result.editedQuantity
             if (result.status == 2) {
                 holder.productCountTextView.setTextColor(context.getColor(R.color.cadmiumred))
