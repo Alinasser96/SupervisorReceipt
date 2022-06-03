@@ -15,5 +15,6 @@ data class All(
     val routenamea: String?,
     val salesmannamea: String?,
     val salesmanno: String?,
+    val isChecked: Boolean,
     var type: Int
 ): Parcelable

@@ -43,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, "loading", Toast.LENGTH_SHORT).show()
             } else {
-                binding.loginButton.clearAnimation()
-
+                binding.loginButton.hideProgress(R.string.login)
+                Toast.makeText(this, "معلومات تسجيل الدخول خاطئة", Toast.LENGTH_LONG).show()
             }
         })
 

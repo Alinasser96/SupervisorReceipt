@@ -112,11 +112,12 @@ class FinalReceiptActivity : BaseActivity() {
             .setPositiveButton(
                 "نعم"
             ) { dialog, _ ->
+                dialog.cancel()
                 viewModel.sendSupervisorInvoice(
                     itemList,
                     SharedPreference(this).getValueString("salesman_no")!!
                 )
-                dialog.cancel()
+
             }
         alertDialogBuilder.setNegativeButton(
             "لا"

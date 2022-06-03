@@ -57,7 +57,7 @@ class AddItemsActivity : AppCompatActivity(), OnItemSelectedListener {
         setContentView(R.layout.activity_add_items)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         viewModel.getFamilies()
-        oldItemsList = intent.getParcelableArrayListExtra<ItemData>("items").toList()
+        oldItemsList = intent.getParcelableArrayListExtra<ItemData>("items")!!.toList()
         viewModel.response.observe(this, Observer {
             familiesList = it.data
             val adapter = ArrayAdapter<String>(
